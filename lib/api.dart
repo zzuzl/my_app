@@ -5,12 +5,23 @@ import 'Project.dart';
 
 class Api {
   String token = "";
+  static const String TOKEN_KEY = "token";
   final Dio dio = new Dio();
   SharedPreferences sp = null;
 
+  Api() {
+    initSp();
+  }
+
+  void initSp() async {
+    if (sp == null) {
+      sp = await SharedPreferences.getInstance();
+      this.token = sp.getString(TOKEN_KEY);
+    }
+  }
+
   void login(String email, String password) async {
     // todo
-
 
   }
 
@@ -28,9 +39,6 @@ class Api {
 
   void storeToken(String token) {
     this.token = token;
-
-
+    sp.setString(TOKEN_KEY, token);
   }
-
-
 }
