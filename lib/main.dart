@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
 
+/*
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    /*return MaterialApp(
+    */
+/*return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );*/
-    /*return MaterialApp(
+    );*//*
+
+    */
+/*return MaterialApp(
       title: 'Navigation Basics',
       home: FirstScreen(),
-    );*/
+    );*//*
+
 
     return MaterialApp(
       title: 'Navigation Basics',
@@ -23,6 +27,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+*/
 
 /*class FirstScreen extends StatelessWidget {
   @override
