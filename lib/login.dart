@@ -1,14 +1,5 @@
 import 'package:flutter/material.dart';
-
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Navigation Basics', home: LoginPage());
-  }
-}
+import 'helper.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -31,7 +22,6 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 Image.asset('images/diamond.png'),
                 SizedBox(height: 16.0),
-                // TODO: Add TextField widgets (101)
                 TextField(
                     decoration: InputDecoration(
                       labelText: 'Username',
@@ -49,17 +39,11 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 120.0),
             ButtonBar(
               children: <Widget>[
-                FlatButton(
-                  child: Text('CANCEL'),
-                  onPressed: () {
-                    _usernameController.clear();
-                    _passwordController.clear();
-                  },
-                ),
                 RaisedButton(
-                  child: Text('NEXT'),
+                    child: Text('LOGIN'),
                   onPressed: () {
-                    // TODO: Show the next page (101)
+                      // api.login(email, password);
+                    Navigator.pushNamed(context, "/main");
                   },
                 ),
               ],

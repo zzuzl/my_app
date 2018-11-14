@@ -6,31 +6,17 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
+import 'dart:io';
+import 'package:my_app/api.dart';
+import 'package:my_app/Company.dart';
 
 void main() {
   test('test get', () async {
     Dio dio = new Dio();
-    Response<String> response = await dio.get("https://www.sohu.com/");
-    print(response.data);
-  });
 
-  test('test post', () async {
-    Options options = new Options(
-        baseUrl: "https://www.xx.com/api",
-        connectTimeout: 5000,
-        receiveTimeout: 3000,
-        // contentType: ContentType.parse("application/x-www-form-urlencoded");
-    );
-
-    Dio dio = new Dio(options);
-
-    dio.interceptor.request.onSend = (Options options) {
-      // Do something before request is sent
-      return options; //continue
-      // If you want to resolve the request with some custom data，
-      // you can return a `Response` object or return `dio.resolve(data)`.
-      // If you want to reject the request with a error message,
-      // you can return a `DioError` object or return `dio.reject(errMsg)`
+    dio.options.contentType=ContentType.parse("application/x-www-form-urlencoded");
+    dio.options.headers = {
+      "token": ".eyJpc3MiOiI2NzIzOTkxNzFAcXEuY29tIiwiZXhwIjoxNTQyMDA3OTM5fQ.KZbzxFsL4hJBH_tZWmQGLAjaRswYcY05EVPFF4XOJ_c"
     };
     dio.interceptor.response.onSuccess = (Response response) {
       return response; // continue
@@ -39,8 +25,23 @@ void main() {
       return e; //continue
     };
 
-    Response<String> response = await dio.post(
-        "/test", data: {"id": 12, "name": "wendu"});
+    Response response = await dio.post("http://localhost:8080/rest/staff/login", data: {
+       "user": "672399171@qq.com",
+       "password": "123456.com"
+    });
+    // Response response = await dio.get("http://localhost:8080/rest/company/list?pid=0");
+
+    print(response.data.toString());
+  });
+
+  test('test api', () async {
+    Api api = new Api();
+    Response response = await api.login("672399171@qq.com", "123456.com");
+    api.storeToken(response.data['msg']);
+
+    response = await api.listCompany(0);
     print(response.data);
+    Company company = new Company(response.data['data'][0]);
+    print(company);
   });
 }
