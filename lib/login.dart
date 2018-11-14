@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'helper.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -23,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 16.0),
                 TextField(
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: 'Username',
                     ),
                     controller: _usernameController),
                 SizedBox(height: 12.0),
@@ -39,9 +40,10 @@ class _LoginPageState extends State<LoginPage> {
             ButtonBar(
               children: <Widget>[
                 RaisedButton(
-                  child: Text('LOGIN'),
+                    child: Text('LOGIN'),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/main');
+                      // api.login(email, password);
+                    Navigator.pushNamed(context, "/main");
                   },
                 ),
               ],

@@ -1,74 +1,23 @@
 import 'package:flutter/material.dart';
+import 'login.dart';
+import 'helper.dart';
 
+void main() => runApp(MyApp());
 
-/*
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    */
-/*return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );*//*
-
-    */
-/*return MaterialApp(
-      title: 'Navigation Basics',
-      home: FirstScreen(),
-    );*//*
-
-
     return MaterialApp(
       title: 'Navigation Basics',
-      home: MyHomePage(),
+      initialRoute: '/main',
+      routes: {
+        '/main': (context) => MyHomePage(),
+        // When we navigate to the "/second" route, build the SecondScreen Widget
+        '/login': (context) => LoginPage(),
+      },
     );
   }
 }
-*/
-
-/*class FirstScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('First Screen'),
-      ),
-      body: Center(
-        child: RaisedButton(
-          child: Text('Launch screen'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SecondScreen()),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class SecondScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Second Screen"),
-      ),
-      body: Center(
-        child: RaisedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Go back!'),
-        ),
-      ),
-    );
-  }
-}*/
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key}) : super(key: key);
@@ -87,6 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    api.listCompany(0);
     return Scaffold(
       appBar: AppBar(
         title: Text('BottomNavigationBar Sample'),
