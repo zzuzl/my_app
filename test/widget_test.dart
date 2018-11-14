@@ -7,7 +7,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
 import 'dart:io';
-import 'package:my_app/api.dart';
+import 'package:my_app/helper.dart';
 import 'package:my_app/Company.dart';
 
 void main() {
@@ -35,11 +35,10 @@ void main() {
   });
 
   test('test api', () async {
-    Api api = new Api();
-    Response response = await api.login("672399171@qq.com", "123456.com");
-    api.storeToken(response.data['msg']);
+    /*Response response = await api.login("672399171@qq.com", "123456.com");
+    api.storeToken(response.data['msg']);*/
 
-    response = await api.listCompany(0);
+    Response response = await api.listCompany(0);
     print(response.data);
     Company company = new Company(response.data['data'][0]);
     print(company);

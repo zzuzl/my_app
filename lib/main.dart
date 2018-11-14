@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'helper.dart';
+import 'package:dio/dio.dart';
+import 'dart:io';
+import 'package:my_app/Company.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,9 +12,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Navigation Basics',
-      initialRoute: '/main',
+      initialRoute: '/',
       routes: {
-        '/main': (context) => MyHomePage(),
+        '/': (context) => MyHomePage(),
         // When we navigate to the "/second" route, build the SecondScreen Widget
         '/login': (context) => LoginPage(),
       },
@@ -36,13 +39,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    api.listCompany(0);
     return Scaffold(
       appBar: AppBar(
         title: Text('BottomNavigationBar Sample'),
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: ListView(
+        shrinkWrap: true,
+        padding: const EdgeInsets.all(20.0),
+        children: <Widget>[
+          const Text('I\'m dedicating every day to you'),
+          const Text('Domestic life was never quite my style'),
+          const Text('When you smile, you knock me out, I fall apart'),
+          const Text('And I thought I was so smart'),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
@@ -57,15 +66,20 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void getCompany() async {
+    Response response = await api.listCompany(0);
+    print(response.data);
+    var list = Company.buildList(response.data);
+    print(list);
+  }
+
   void _onItemTapped(int index) {
+    getCompany();
     setState(() {
-      debugDumpApp();
       _selectedIndex = index;
     });
   }
 }
-
-
 
 /*
 class MyHomePage extends StatefulWidget {

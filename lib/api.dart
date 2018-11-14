@@ -9,7 +9,7 @@ import 'Project.dart';
 class Api {
   static String token = "";
   static const String TOKEN_KEY = "token";
-  static const String BASE = "http://localhost:8080/";
+  static const String BASE = "http://www.zlihj.cn/";
   static final Dio dio = new Dio();
   static SharedPreferences sp = null;
 
@@ -20,9 +20,7 @@ class Api {
       return options;
     };
     dio.interceptor.response.onError = (DioError e){
-      if(e.response.statusCode == 401) {
-        // Navigator.pushNamed(context, "/login");
-      }
+      print('出错了');
       return  e;//continue
     };
     initSp();
@@ -47,6 +45,10 @@ class Api {
       "user": email,
       "password": password
     });
+  }
+
+  Future<Response> test() {
+    return dio.get("http://www.baidu.com/");
   }
 
   Future<Response> listCompany(int pid) {
