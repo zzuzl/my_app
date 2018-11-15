@@ -3,8 +3,9 @@ import 'login.dart';
 import 'helper.dart';
 import 'package:dio/dio.dart';
 import 'dart:io';
-import 'package:my_app/Company.dart';
+import 'Company.dart';
 import 'Project.dart';
+import 'second.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => MyHomePage(),
         '/login': (context) => LoginPage(),
+        '/second': (context) => SecondPage(),
       },
     );
   }
@@ -67,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icons.theaters,
                       color: Colors.blue[500],
                     ),
+                    onTap: () => Navigator.pushNamed(context, "/second"),
                   ),
                 ],
               ),
