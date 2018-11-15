@@ -4,6 +4,7 @@ import 'helper.dart';
 import 'package:dio/dio.dart';
 import 'dart:io';
 import 'package:my_app/Company.dart';
+import 'Project.dart';
 
 void main() => runApp(MyApp());
 
@@ -15,7 +16,6 @@ class MyApp extends StatelessWidget {
       initialRoute: '/login',
       routes: {
         '/': (context) => MyHomePage(),
-        // When we navigate to the "/second" route, build the SecondScreen Widget
         '/login': (context) => LoginPage(),
       },
     );
@@ -30,27 +30,58 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  BuildContext context;
-  int _selectedIndex = 1;
-  final _widgetOptions = [
-    ListView(
-      shrinkWrap: true,
-      padding: const EdgeInsets.all(20.0),
-      children: list,
-    ),
-    Text('Index 1: Business'),
-    Text('Index 2: School'),
-  ];
+  int _selectedIndex = 0;
+  List<Company> companyList;
+  List<Project> projectList;
+
+  @override
+  void initState() {
+    super.initState();
+    this.getCompany(0);
+  }
+
+  Widget buildIndex() {
+    if (_selectedIndex == 0) {
+      return _buildIndex(companyList);
+    } else if (_selectedIndex == 1) {
+      return _buildIndex(projectList);
+    } else {
+      return _buildIndex(companyList);
+    }
+  }
+
+  Widget _buildIndex(List list) {
+    return new ListView.builder(
+        itemCount: list == null ? 0 : list.length,
+        itemBuilder: (BuildContext context, int index) {
+          return new Container(
+            child: new Center(
+              child: new Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  ListTile(
+                    title: Text(list[index].getName,
+                        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20.0)),
+                    subtitle: Text('85 W Portal Ave'),
+                    leading: Icon(
+                      Icons.theaters,
+                      color: Colors.blue[500],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
-    getCompany();
-
     return Scaffold(
       appBar: AppBar(
         title: Text('BottomNavigationBar Sample'),
       ),
-      body: _widgetOptions.elementAt(_selectedIndex),
+      body: buildIndex(),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
@@ -66,68 +97,35 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void getCompany() async {
+  void getCompany(int index) async {
     Response response = await api.listCompany(0);
-    print(response.data);
-    List<Company> companys = Company.buildList(response.data);
-    for (Company company in companys) {
-      list.add(ListTile(
-        title: Text(company.getName,
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20.0)),
-        subtitle: Text('85 W Portal Ave'),
-        leading: Icon(
-          Icons.theaters,
-          color: Colors.blue[500],
-        ),
-      ));
-    }
-
+    List<Company> companys = Company.buildList(response.data['data']);
     print(companys);
+
+    setState(() {
+      _selectedIndex = index;
+      this.companyList = companys;
+    });
+  }
+
+  void getProject(int index) async {
+    Response response = await api.listProject(0);
+    List<Project> projects = Project.buildList(response.data['data']);
+    print(projects);
+
+    setState(() {
+      _selectedIndex = index;
+      this.projectList = projects;
+    });
   }
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index == 0) {
+      getCompany(index);
+    } else if (index == 1) {
+      getProject(index);
+    } else {
+      getCompany(index);
+    }
   }
 }
-
-/*
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}*/
-
-List<Widget> list = <Widget>[
-  ListTile(
-    title: Text('CineArts at the Empire',
-        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20.0)),
-    subtitle: Text('85 W Portal Ave'),
-    leading: Icon(
-      Icons.theaters,
-      color: Colors.blue[500],
-    ),
-  ),
-];
-/*
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        elevation: 5.0, // Removing the drop shadow cast by the app bar.
-      ),
-      body: Center(
-        child: ListView(
-          children: list,
-        ),
-      ),
-    );
-  }
-}*/

@@ -13,8 +13,8 @@ class Company {
     this.pid = map['pid'];
   }
 
-  static List<Company> buildList(List<Map> list) {
-    List<Company> companys = new List(list.length);
+  static List<Company> buildList(List list) {
+    List<Company> companys = new List();
     for (Map map in list) {
       companys.add(new Company(map));
     }
@@ -34,6 +34,5 @@ class Company {
   String toString() {
     return 'Company{id: $id, name: $name, pid: $pid}';
   }
-
 
 }
