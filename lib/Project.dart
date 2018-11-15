@@ -6,6 +6,7 @@ class Project {
   int pid;
 
   String get getName => name;
+  int get getId => id;
 
   Project(Map map) {
     this.id = map['id'];

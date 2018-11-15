@@ -59,8 +59,8 @@ class Api {
     return dio.get(BASE + "rest/project/list?pid=${pid}");
   }
 
-  Future<Response> listStaff(int pid, int page) {
-    return dio.get(BASE + "rest/staff/findByPid?pid=${pid}&page=${page}");
+  Future<Response> listStaff(int pid, int page, int source) {
+    return dio.get(BASE + "rest/staff/findByPid?pid=${pid}&page=${page}&source=${source}");
   }
 
   void storeToken(String _token) {

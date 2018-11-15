@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'Company.dart';
+import 'Staff.dart';
 
-class SecondPage extends StatelessWidget {
+class SecondCompanyPage extends StatelessWidget {
+  final List<Company> companyList;
+  final List<Staff> staffList;
+
+  SecondCompanyPage({Key key, @required this.companyList, @required this.staffList}) : super(key: key);
 
   _buildContactList() {
     return <ContactModal>[

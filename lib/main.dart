@@ -5,7 +5,9 @@ import 'package:dio/dio.dart';
 import 'dart:io';
 import 'Company.dart';
 import 'Project.dart';
-import 'second.dart';
+import 'Staff.dart';
+import 'second_company.dart';
+import 'second_project.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,8 +19,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/login',
       routes: {
         '/': (context) => MyHomePage(),
-        '/login': (context) => LoginPage(),
-        '/second': (context) => SecondPage(),
+        '/login': (context) => LoginPage()
       },
     );
   }
@@ -69,7 +70,28 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icons.theaters,
                       color: Colors.blue[500],
                     ),
-                    onTap: () => Navigator.pushNamed(context, "/second"),
+                    onTap: () async {
+                      int id = list[index].getId;
+                      Response _response = await api.listStaff(id, 1, _selectedIndex == 0 ? 1 : 2);
+
+                      if (_selectedIndex == 0) {
+                        Response response = await api.listCompany(id);
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => SecondCompanyPage(
+                              companyList: Company.buildList(response.data['data']),
+                            staffList: Staff.buildList(_response.data['data']),
+                          ),
+                        ));
+                      } else if (_selectedIndex == 1) {
+                        Response response = await api.listProject(id);
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => SecondProjectPage(
+                              projectList: Project.buildList(response.data['data']),
+                            staffList: Staff.buildList(_response.data['data']),
+                          ),
+                        ));
+                      }
+                    }
                   ),
                 ],
               ),
@@ -103,7 +125,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void getCompany(int index) async {
     Response response = await api.listCompany(0);
     List<Company> companys = Company.buildList(response.data['data']);
-    print(companys);
 
     setState(() {
       _selectedIndex = index;
@@ -114,12 +135,15 @@ class _MyHomePageState extends State<MyHomePage> {
   void getProject(int index) async {
     Response response = await api.listProject(0);
     List<Project> projects = Project.buildList(response.data['data']);
-    print(projects);
 
     setState(() {
       _selectedIndex = index;
       this.projectList = projects;
     });
+  }
+
+  void _onTitleTapped(BuildContext context) {
+
   }
 
   void _onItemTapped(int index) {

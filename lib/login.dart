@@ -45,7 +45,6 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () async {
                     Response response =
                         await api.login("672399171@qq.com", "123456.com");
-                    print(response.data);
                     if (response.data['success']) {
                       Navigator.pushNamed(context, "/");
                     }
