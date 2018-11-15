@@ -5,6 +5,8 @@ class Company {
   String name;
   int pid;
 
+  String get getName => name;
+
   Company(Map map) {
     this.id = map['id'];
     this.name = map['name'];

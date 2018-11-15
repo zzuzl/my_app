@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'helper.dart';
+import 'package:dio/dio.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -40,10 +41,14 @@ class _LoginPageState extends State<LoginPage> {
             ButtonBar(
               children: <Widget>[
                 RaisedButton(
-                    child: Text('LOGIN'),
-                  onPressed: () {
-                      // api.login(email, password);
-                    Navigator.pushNamed(context, "/main");
+                  child: Text('LOGIN'),
+                  onPressed: () async {
+                    Response response =
+                        await api.login("672399171@qq.com", "123456.com");
+                    print(response.data);
+                    if (response.data['success']) {
+                      Navigator.pushNamed(context, "/");
+                    }
                   },
                 ),
               ],
