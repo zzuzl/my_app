@@ -16,11 +16,15 @@ class Api {
   Api() {
     dio.interceptor.request.onSend = (Options options) {
       options.contentType=ContentType.parse("application/x-www-form-urlencoded");
-      options.headers = {"token": token};
+      options.headers = {TOKEN_KEY: token};
+
+      print("send token:${token}");
       return options;
     };
     dio.interceptor.response.onSuccess = (Response response) {
-      String token = response.headers.value("token");
+      String token = response.headers.value(TOKEN_KEY);
+      print("success token:${token}");
+
       if (token != null && token.length > 0) {
         storeToken(token);
       }
@@ -72,7 +76,7 @@ class Api {
   }
 
   Future<Response> checkToken() {
-    return dio.get(BASE + "rest/checkToken");
+    return dio.get(BASE + "rest/checkLogin");
   }
 
   void storeToken(String _token) {

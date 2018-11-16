@@ -4,10 +4,11 @@ import 'Staff.dart';
 import 'staff_info.dart';
 
 class SecondCompanyPage extends StatelessWidget {
+  final Company company;
   final List<Company> companyList;
   final List<Staff> staffList;
 
-  SecondCompanyPage({Key key, @required this.companyList, @required this.staffList}) : super(key: key);
+  SecondCompanyPage({Key key, @required this.company, @required this.companyList, @required this.staffList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +23,12 @@ class SecondCompanyPage extends StatelessWidget {
 
     for(Staff s in staffList) {
       list.add(ListTile(
-          leading: new CircleAvatar(child: new Text(s.getName)),
-          title: new Text(s.getName),
-          subtitle: new Text(s.getName),
+          leading: new CircleAvatar(child: new Text(s.name)),
+          title: new Text(s.name),
+          subtitle: new Text(s.name),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ContactsDemo()));
+            s.setPname(company.getName);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ContactsDemo(s)));
           },
       ));
     }

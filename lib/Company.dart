@@ -16,6 +16,10 @@ class Company {
 
   static List<Company> buildList(List list) {
     List<Company> companys = new List();
+    if (list == null) {
+      return companys;
+    }
+
     for (Map map in list) {
       companys.add(new Company(map));
     }

@@ -41,7 +41,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    this.getCompany(0);
+    this.checkToken();
+    // this.getCompany(0);
   }
 
   Widget buildIndex() {
@@ -79,7 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         Response response = await api.listCompany(id);
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => SecondCompanyPage(
-                              companyList: Company.buildList(response.data['data']),
+                            company: list[index],
+                            companyList: Company.buildList(response.data['data']),
                             staffList: Staff.buildList(_response.data['data']),
                           ),
                         ));
@@ -121,6 +123,13 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: _onItemTapped,
       ),
     );
+  }
+
+  void checkToken() async {
+    Response response = await api.checkToken();
+    if (response.data.length > 0) {
+      Navigator.pushNamed(context, '/login');
+    }
   }
 
   void getCompany(int index) async {

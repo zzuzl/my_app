@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'Staff.dart';
 
 class _ContactCategory extends StatelessWidget {
   const _ContactCategory({ Key key, this.icon, this.children }) : super(key: key);
@@ -38,20 +39,18 @@ class _ContactCategory extends StatelessWidget {
 }
 
 class _ContactItem extends StatelessWidget {
-  _ContactItem({ Key key, this.icon, this.lines, this.tooltip, this.onPressed })
-      : assert(lines.length > 1),
+  _ContactItem({ Key key, this.lines})
+      : assert(lines.length > 0),
         super(key: key);
 
-  final IconData icon;
   final List<String> lines;
-  final String tooltip;
-  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    final List<Widget> columnChildren = lines.sublist(0, lines.length - 1).map<Widget>((String line) => Text(line)).toList();
-    columnChildren.add(Text(lines.last, style: themeData.textTheme.caption));
+    final List<Widget> columnChildren = <Widget>[
+      Text(lines.first == null ? '' : lines.first, style: themeData.textTheme.caption)
+    ];
 
     final List<Widget> rowChildren = <Widget>[
       Expanded(
@@ -61,16 +60,7 @@ class _ContactItem extends StatelessWidget {
           )
       )
     ];
-    if (icon != null) {
-      rowChildren.add(SizedBox(
-          width: 72.0,
-          child: IconButton(
-              icon: Icon(icon),
-              color: themeData.primaryColor,
-              onPressed: onPressed
-          )
-      ));
-    }
+
     return MergeSemantics(
       child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -84,16 +74,20 @@ class _ContactItem extends StatelessWidget {
 }
 
 class ContactsDemo extends StatefulWidget {
+  final Staff staff;
+
+  ContactsDemo(this.staff);
 
   @override
-  ContactsDemoState createState() => ContactsDemoState();
+  ContactsDemoState createState() => ContactsDemoState(this.staff);
 }
-
-enum AppBarBehavior { normal, pinned, floating, snapping }
 
 class ContactsDemoState extends State<ContactsDemo> {
   static final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final double _appBarHeight = 256.0;
+  final Staff staff;
+
+  ContactsDemoState(this.staff);
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +105,7 @@ class ContactsDemoState extends State<ContactsDemo> {
               expandedHeight: _appBarHeight,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
-                title: const Text('Ali Connors'),
+                title: Text(staff.name + '(${staff.gender})'),
                 background: Stack(
                   fit: StackFit.expand,
                 ),
@@ -125,42 +119,18 @@ class ContactsDemoState extends State<ContactsDemo> {
                     icon: Icons.call,
                     children: <Widget>[
                       _ContactItem(
-                        icon: Icons.message,
-                        tooltip: 'Send message',
-                        onPressed: () {
-                          _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                              content: Text('Pretend that this opened your SMS application.')
-                          ));
-                        },
-                        lines: const <String>[
-                          '(650) 555-1234',
-                          'Mobile',
+                        lines: <String>[
+                          staff.pname,
                         ],
                       ),
                       _ContactItem(
-                        icon: Icons.message,
-                        tooltip: 'Send message',
-                        onPressed: () {
-                          _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                              content: Text('A messaging app appears.')
-                          ));
-                        },
-                        lines: const <String>[
-                          '(323) 555-6789',
-                          'Work',
+                        lines: <String>[
+                          staff.workType,
                         ],
                       ),
                       _ContactItem(
-                        icon: Icons.message,
-                        tooltip: 'Send message',
-                        onPressed: () {
-                          _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                              content: Text('Imagine if you will, a messaging application.')
-                          ));
-                        },
-                        lines: const <String>[
-                          '(650) 555-6789',
-                          'Home',
+                        lines: <String>[
+                          staff.birthday,
                         ],
                       ),
                     ],
@@ -170,29 +140,28 @@ class ContactsDemoState extends State<ContactsDemo> {
                   icon: Icons.contact_mail,
                   children: <Widget>[
                     _ContactItem(
-                      icon: Icons.email,
-                      tooltip: 'Send personal e-mail',
-                      onPressed: () {
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                            content: Text('Here, your e-mail application would open.')
-                        ));
-                      },
-                      lines: const <String>[
-                        'ali_connors@example.com',
-                        'Personal',
+                      lines: <String>[
+                        staff.email,
                       ],
                     ),
                     _ContactItem(
-                      icon: Icons.email,
-                      tooltip: 'Send work e-mail',
-                      onPressed: () {
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                            content: Text('Summon your favorite e-mail application here.')
-                        ));
-                      },
-                      lines: const <String>[
-                        'aliconnors@example.com',
-                        'Work',
+                      lines: <String>[
+                        staff.qq,
+                      ],
+                    ),
+                    _ContactItem(
+                      lines: <String>[
+                        staff.wx,
+                      ],
+                    ),
+                    _ContactItem(
+                      lines: <String>[
+                        staff.gxtAccount,
+                      ],
+                    ),
+                    _ContactItem(
+                      lines: <String>[
+                        staff.phone,
                       ],
                     ),
                   ],
@@ -201,74 +170,18 @@ class ContactsDemoState extends State<ContactsDemo> {
                   icon: Icons.location_on,
                   children: <Widget>[
                     _ContactItem(
-                      icon: Icons.map,
-                      tooltip: 'Open map',
-                      onPressed: () {
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                            content: Text('This would show a map of San Francisco.')
-                        ));
-                      },
-                      lines: const <String>[
-                        '2000 Main Street',
-                        'San Francisco, CA',
-                        'Home',
+                      lines: <String>[
+                        staff.school,
                       ],
                     ),
                     _ContactItem(
-                      icon: Icons.map,
-                      tooltip: 'Open map',
-                      onPressed: () {
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                            content: Text('This would show a map of Mountain View.')
-                        ));
-                      },
-                      lines: const <String>[
-                        '1600 Amphitheater Parkway',
-                        'Mountain View, CA',
-                        'Work',
+                      lines: <String>[
+                        staff.major,
                       ],
                     ),
                     _ContactItem(
-                      icon: Icons.map,
-                      tooltip: 'Open map',
-                      onPressed: () {
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                            content: Text('This would also show a map, if this was not a demo.')
-                        ));
-                      },
-                      lines: const <String>[
-                        '126 Severyns Ave',
-                        'Mountain View, CA',
-                        'Jet Travel',
-                      ],
-                    ),
-                  ],
-                ),
-                _ContactCategory(
-                  icon: Icons.today,
-                  children: <Widget>[
-                    _ContactItem(
-                      lines: const <String>[
-                        'Birthday',
-                        'January 9th, 1989',
-                      ],
-                    ),
-                    _ContactItem(
-                      lines: const <String>[
-                        'Wedding anniversary',
-                        'June 21st, 2014',
-                      ],
-                    ),
-                    _ContactItem(
-                      lines: const <String>[
-                        'First day in office',
-                        'January 20th, 2015',
-                      ],
-                    ),
-                    _ContactItem(
-                      lines: const <String>[
-                        'Last day in office',
-                        'August 9th, 2018',
+                      lines: <String>[
+                        staff.workAddress,
                       ],
                     ),
                   ],

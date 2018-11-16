@@ -16,6 +16,9 @@ class Project {
 
   static List<Project> buildList(List list) {
     List<Project> projects = new List();
+    if (list == null) {
+      return projects;
+    }
     for (Map map in list) {
       projects.add(new Project(map));
     }

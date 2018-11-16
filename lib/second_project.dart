@@ -21,9 +21,9 @@ class SecondProjectPage extends StatelessWidget {
 
     for(Staff s in staffList) {
       list.add(ListTile(
-          leading: new CircleAvatar(child: new Text(s.getName)),
-          title: new Text(s.getName),
-          subtitle: new Text(s.getName))
+          leading: new CircleAvatar(child: new Text(s.name)),
+          title: new Text(s.name),
+          subtitle: new Text(s.name))
       );
     }
 
