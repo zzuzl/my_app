@@ -35,12 +35,10 @@ void main() {
   });
 
   test('test api', () async {
-    /*Response response = await api.login("672399171@qq.com", "123456.com");
-    api.storeToken(response.data['msg']);*/
+    Response response = await api.login("672399171@qq.com", "123456.com");
+    print(response.headers);
 
-    Response response = await api.listCompany(0);
-    print(response.data);
-    Company company = new Company(response.data['data'][0]);
-    print(company);
+    response = await api.listCompany(0);
+    print(response.headers);
   });
 }

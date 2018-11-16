@@ -8,6 +8,7 @@ import 'Project.dart';
 import 'Staff.dart';
 import 'second_company.dart';
 import 'second_project.dart';
+import 'me.dart';
 
 void main() => runApp(MyApp());
 
@@ -49,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } else if (_selectedIndex == 1) {
       return _buildIndex(projectList);
     } else {
-      return _buildIndex(companyList);
+      return MePage();
     }
   }
 
@@ -140,10 +141,6 @@ class _MyHomePageState extends State<MyHomePage> {
       _selectedIndex = index;
       this.projectList = projects;
     });
-  }
-
-  void _onTitleTapped(BuildContext context) {
-
   }
 
   void _onItemTapped(int index) {

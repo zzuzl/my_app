@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'Company.dart';
@@ -11,13 +11,21 @@ class Api {
   static const String TOKEN_KEY = "token";
   static const String BASE = "http://www.zlihj.cn/";
   static final Dio dio = new Dio();
-  // static SharedPreferences sp = null;
+  static SharedPreferences sp = null;
 
   Api() {
     dio.interceptor.request.onSend = (Options options) {
       options.contentType=ContentType.parse("application/x-www-form-urlencoded");
       options.headers = {"token": token};
       return options;
+    };
+    dio.interceptor.response.onSuccess = (Response response) {
+      String token = response.headers.value("token");
+      if (token != null && token.length > 0) {
+        storeToken(token);
+      }
+
+      return response; // continue
     };
     dio.interceptor.response.onError = (DioError e){
       // print('出错了');
@@ -34,10 +42,10 @@ class Api {
       }
       return null;
     });
-    /*if (sp == null) {
+    if (sp == null) {
       sp = await SharedPreferences.getInstance();
       token = sp.getString(TOKEN_KEY);
-    }*/
+    }
   }
 
   Future<Response> login(String email, String password) {
@@ -65,6 +73,6 @@ class Api {
 
   void storeToken(String _token) {
     token = _token;
-    // sp.setString(TOKEN_KEY, token);
+    sp.setString(TOKEN_KEY, token);
   }
 }
