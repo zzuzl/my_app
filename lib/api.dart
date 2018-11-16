@@ -71,6 +71,10 @@ class Api {
     return dio.get(BASE + "rest/staff/findByPid?pid=${pid}&page=${page}&source=${source}");
   }
 
+  Future<Response> checkToken() {
+    return dio.get(BASE + "rest/checkToken");
+  }
+
   void storeToken(String _token) {
     token = _token;
     sp.setString(TOKEN_KEY, token);
