@@ -10,24 +10,11 @@ import 'second_company.dart';
 import 'second_project.dart';
 import 'me.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Navigation Basics',
-      initialRoute: '/',
-      routes: {
-        '/': (context) => MyHomePage(),
-        '/login': (context) => LoginPage()
-      },
-    );
-  }
-}
-
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+  final Staff staff;
+  MyHomePage({Key key, @required this.staff}) : super(key: key);
+
+  Staff getMe() => staff;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -41,8 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    this.checkToken();
-    // this.getCompany(0);
+    this.getCompany(0);
   }
 
   Widget buildIndex() {
@@ -51,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } else if (_selectedIndex == 1) {
       return _buildIndex(projectList);
     } else {
-      return MePage();
+      return MePage(widget.getMe());
     }
   }
 
@@ -125,12 +111,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void checkToken() async {
-    Response response = await api.checkToken();
-    if (response.data.length > 0) {
-      Navigator.pushNamed(context, '/login');
-    }
-  }
 
   void getCompany(int index) async {
     Response response = await api.listCompany(0);

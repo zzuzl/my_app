@@ -33,8 +33,6 @@ class Staff {
     this._email = map['email'];
     this._wx = map['wx'];
     this._workAddress = map['workAddress'];
-
-    print(this._workType);
   }
 
   static List<Staff> buildList(List list) {

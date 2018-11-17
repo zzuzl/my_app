@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'helper.dart';
 import 'package:dio/dio.dart';
 import 'main.dart';
+import 'Staff.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -47,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
                     Response response =
                         await api.login("672399171@qq.com", "123456.com");
                     if (response.data['success']) {
-                      Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage(staff: Staff(response.data['data']))));
                     }
                   },
                 ),
