@@ -30,7 +30,7 @@ class LaunchPage extends StatelessWidget {
 
     return Scaffold(
       body: Center(
-        child: Text('登录检测中。。。'),
+        child: const CircularProgressIndicator(),
       ),
     );
   }
@@ -38,9 +38,9 @@ class LaunchPage extends StatelessWidget {
   void checkToken(BuildContext context) async {
     Response response = await api.checkToken();
     if (response.data['success']) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage(staff: Staff(response.data['data']))));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(staff: Staff(response.data['data']))));
     } else {
-      Navigator.pushNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, '/login');
     }
   }
 

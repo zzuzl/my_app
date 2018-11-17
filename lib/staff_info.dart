@@ -47,9 +47,8 @@ class _ContactItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
     final List<Widget> columnChildren = <Widget>[
-      Text(lines.first == null ? '' : lines.first, style: themeData.textTheme.caption)
+      Text(lines.first == null ? '' : lines.first, style: TextStyle(fontWeight: FontWeight.w300))
     ];
 
     final List<Widget> rowChildren = <Widget>[

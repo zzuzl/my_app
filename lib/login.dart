@@ -3,6 +3,7 @@ import 'helper.dart';
 import 'package:dio/dio.dart';
 import 'main.dart';
 import 'Staff.dart';
+import 'launch.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,9 +13,13 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  String buttonText = '登录';
+  Function callback;
 
   @override
   Widget build(BuildContext context) {
+    callback = login;
+
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -27,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 16.0),
                 TextField(
                     decoration: InputDecoration(
-                      labelText: 'Username',
+                      labelText: 'Email',
                     ),
                     controller: _usernameController),
                 SizedBox(height: 12.0),
@@ -43,14 +48,8 @@ class _LoginPageState extends State<LoginPage> {
             ButtonBar(
               children: <Widget>[
                 RaisedButton(
-                  child: Text('LOGIN'),
-                  onPressed: () async {
-                    Response response =
-                        await api.login("672399171@qq.com", "123456.com");
-                    if (response.data['success']) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage(staff: Staff(response.data['data']))));
-                    }
-                  },
+                  child: Text(this.buttonText),
+                  onPressed: login,
                 ),
               ],
             )
@@ -58,5 +57,22 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void login() async {
+    setState(() {
+      this.buttonText = '登录中';
+      this.callback = null;
+    });
+    Response response =
+        await api.login("672399171@qq.com", "123456.com");
+    if (response.data['success']) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(staff: Staff(response.data['data']))));
+    } else {
+      setState(() {
+        this.buttonText = '登录';
+        this.callback = login;
+      });
+    }
   }
 }

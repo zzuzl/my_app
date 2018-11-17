@@ -8,14 +8,13 @@ class MePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(staff);
     return Scaffold(
       body: Column(
         children: <Widget>[
           ListTile(
             title: Text(staff.name,
                 style: TextStyle(fontWeight: FontWeight.w500)),
-            subtitle: Text(staff.name),
+            subtitle: Text(staff.workType),
             leading: Icon(
               Icons.restaurant_menu,
               color: Colors.blue[500],
@@ -23,8 +22,14 @@ class MePage extends StatelessWidget {
           ),
           Divider(),
           ListTile(
-            title: Text(staff.phone,
-                style: TextStyle(fontWeight: FontWeight.w500)),
+            title: Text(staff.pname),
+            leading: Icon(
+              Icons.contact_phone,
+              color: Colors.blue[500],
+            ),
+          ),
+          ListTile(
+            title: Text(staff.phone),
             leading: Icon(
               Icons.contact_phone,
               color: Colors.blue[500],
