@@ -5,6 +5,7 @@ import 'dart:io';
 import 'login.dart';
 import 'main.dart';
 import 'Staff.dart';
+import 'search.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,11 +13,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Navigation Basics',
+      debugShowCheckedModeBanner: false,
+      title: '中原分公司数字人事',
       initialRoute: '/',
       routes: {
         '/': (context) => LaunchPage(),
         '/login': (context) => LoginPage(),
+        '/search': (context) => SearchPage(),
       },
     );
   }
@@ -40,7 +43,7 @@ class LaunchPage extends StatelessWidget {
     if (response.data['success']) {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(staff: Staff(response.data['data']))));
     } else {
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
     }
   }
 

@@ -28,9 +28,9 @@ class SecondProjectPage extends StatelessWidget {
     for (Staff s in staffList) {
       list.add(
         ListTile(
-            leading: new CircleAvatar(child: new Text(s.name)),
+            leading: new CircleAvatar(child: new Text(String.fromCharCode(s.name.codeUnitAt(0)))),
             title: new Text(s.name),
-            subtitle: new Text(s.name),
+            subtitle: new Text(s.workType),
             onTap: () {
               s.setPname(project.getName);
               Navigator.push(context,
@@ -41,7 +41,7 @@ class SecondProjectPage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('First Screen'),
+          title: Text(project.getName),
         ),
         body: ListView(
           padding: new EdgeInsets.symmetric(vertical: 8.0),

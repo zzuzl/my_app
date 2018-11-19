@@ -13,13 +13,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  String buttonText = '登录';
-  Function callback;
+  bool buttonEnabled = true;
 
   @override
   Widget build(BuildContext context) {
-    callback = login;
-
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -32,13 +29,13 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 16.0),
                 TextField(
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: '邮箱',
                     ),
                     controller: _usernameController),
                 SizedBox(height: 12.0),
                 TextField(
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: '密码',
                     ),
                     obscureText: true,
                     controller: _passwordController)
@@ -47,10 +44,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 120.0),
             ButtonBar(
               children: <Widget>[
-                RaisedButton(
-                  child: Text(this.buttonText),
-                  onPressed: login,
-                ),
+                buildButton(),
               ],
             )
           ],
@@ -59,19 +53,43 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget buildButton() {
+    return new RaisedButton(
+      child: new Text(
+          buttonEnabled ? "登录" : "登录中"
+      ),
+      onPressed: buttonEnabled ? login : null,
+    );
+  }
+
   void login() async {
     setState(() {
-      this.buttonText = '登录中';
-      this.callback = null;
+      buttonEnabled = false;
     });
     Response response =
         await api.login("672399171@qq.com", "123456.com");
     if (response.data['success']) {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(staff: Staff(response.data['data']))));
     } else {
+      showDialog<void>(
+        context: context,
+        barrierDismissible: true, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('提示'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(response.data['msg']),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+
       setState(() {
-        this.buttonText = '登录';
-        this.callback = login;
+        buttonEnabled = true;
       });
     }
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Staff.dart';
+import 'MyIcon.dart';
 
 class MePage extends StatelessWidget {
   final Staff staff;
@@ -16,7 +17,7 @@ class MePage extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text(staff.workType),
             leading: Icon(
-              Icons.restaurant_menu,
+              Icons.contacts,
               color: Colors.blue[500],
             ),
           ),
@@ -24,56 +25,56 @@ class MePage extends StatelessWidget {
           ListTile(
             title: Text(staff.pname),
             leading: Icon(
-              Icons.contact_phone,
+              Icons.domain,
               color: Colors.blue[500],
             ),
           ),
           ListTile(
             title: Text(staff.phone),
             leading: Icon(
-              Icons.contact_phone,
+              Icons.call,
               color: Colors.blue[500],
             ),
           ),
           ListTile(
             title: Text(staff.email),
             leading: Icon(
-              Icons.contact_mail,
+              Icons.email,
               color: Colors.blue[500],
             ),
           ),
           ListTile(
             title: Text(staff.qq),
             leading: Icon(
-              Icons.contact_mail,
+              MyIcon.qq,
               color: Colors.blue[500],
             ),
           ),
           ListTile(
             title: Text(staff.wx),
             leading: Icon(
-              Icons.contact_mail,
+              MyIcon.wx,
               color: Colors.blue[500],
             ),
           ),
           ListTile(
             title: Text(staff.gxtAccount),
             leading: Icon(
-              Icons.contact_mail,
+              Icons.account_box,
               color: Colors.blue[500],
             ),
           ),
           ListTile(
             title: Text(staff.workAddress),
             leading: Icon(
-              Icons.contact_mail,
+              Icons.location_on,
               color: Colors.blue[500],
             ),
           ),
           ListTile(
             title: Text(staff.birthday),
             leading: Icon(
-              Icons.contact_mail,
+              Icons.cake,
               color: Colors.blue[500],
             ),
           ),

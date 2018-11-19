@@ -59,8 +59,8 @@ class Api {
     });
   }
 
-  Future<Response> test() {
-    return dio.get("http://www.baidu.com/");
+  Future<Response> search(String key) {
+    return dio.get(BASE + "rest/search?key=${key}");
   }
 
   Future<Response> listCompany(int pid) {
@@ -73,6 +73,18 @@ class Api {
 
   Future<Response> listStaff(int pid, int page, int source) {
     return dio.get(BASE + "rest/staff/findByPid?pid=${pid}&page=${page}&source=${source}");
+  }
+
+  Future<Response> getStaff(int id) {
+    return dio.get(BASE + "rest/staff/findById?id=${id}");
+  }
+
+  Future<Response> getCompany(int id) {
+    return dio.get(BASE + "rest/company/findById?id=${id}");
+  }
+
+  Future<Response> getProject(int id) {
+    return dio.get(BASE + "rest/project/findById?id=${id}");
   }
 
   Future<Response> checkToken() {

@@ -1,203 +1,120 @@
 import 'package:flutter/material.dart';
+import 'helper.dart';
+import 'package:dio/dio.dart';
+import 'SearchResult.dart';
+import 'staff_info.dart';
+import 'Staff.dart';
+import 'Company.dart';
+import 'Project.dart';
+import 'second_company.dart';
+import 'second_project.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
+class SearchPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Navigation Basics', home: SearchDemo());
-  }
+  _SearchPageState createState() => new _SearchPageState();
 }
 
-class SearchDemo extends StatefulWidget {
-  static const String routeName = '/material/search';
-
-  @override
-  _SearchDemoState createState() => _SearchDemoState();
-}
-
-class _SearchDemoState extends State<SearchDemo> {
-  final _SearchDemoSearchDelegate _delegate = _SearchDemoSearchDelegate();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  int _lastIntegerSelected;
+class _SearchPageState extends State<SearchPage> {
+  TextEditingController controller = new TextEditingController();
+  List<SearchResult> _searchResult = new List();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text('Numbers'),
-        actions: <Widget>[
-          IconButton(
-            tooltip: 'Search',
-            icon: const Icon(Icons.search),
-            onPressed: () async {
-              final int selected = await showSearch<int>(
-                context: context,
-                delegate: _delegate,
-              );
-              if (selected != null && selected != _lastIntegerSelected) {
-                setState(() {
-                  _lastIntegerSelected = selected;
-                });
-              }
-            },
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text('搜索'),
+        elevation: 0.0,
+      ),
+      body: new Column(
+        children: <Widget>[
+          new Container(
+            color: Theme.of(context).primaryColor,
+            child: new Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: new Card(
+                child: new ListTile(
+                  leading: new Icon(Icons.search),
+                  title: new TextField(
+                    controller: controller,
+                    decoration: new InputDecoration(
+                        hintText: '搜索', border: InputBorder.none),
+                    onSubmitted: onSearchTextChanged,
+                  ),
+                  trailing: new IconButton(icon: new Icon(Icons.cancel), onPressed: () {
+                    controller.clear();
+                    onSearchTextChanged('');
+                  },),
+                ),
+              ),
+            ),
+          ),
+          new Expanded(
+            child: new ListView.builder(
+              itemCount: _searchResult.length,
+              itemBuilder: (context, i) {
+                return new Card(
+                  child: new ListTile(
+                    leading: Icon(
+                      _searchResult[i].type == 1 ? Icons.contacts : Icons.domain,
+                      color: Colors.blue[500],
+                    ),
+                    title: new Text(_searchResult[i].title),
+                    onTap: () async {
+                      SearchResult sr = _searchResult[i];
+                      if (sr.type == 1) {
+                        Response response = await api.getStaff(sr.id);
+                        if (response.data['success']) {
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ContactsDemo(Staff(response.data['data']))));
+                        }
+                      } else if (sr.type == 2) {
+                        Response response = await api.listStaff(sr.id, 1, 0);
+                        if (response.data['success']) {
+                          Map map = new Map();
+                          map.putIfAbsent('name', () => sr.title);
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SecondCompanyPage(
+                              company: new Company(map),
+                              companyList: new List(),
+                              staffList: Staff.buildList(response.data['data'])))
+                          );
+                        }
+                      } else if (sr.type == 3) {
+                        Response response = await api.listStaff(sr.id, 1, 1);
+                        if (response.data['success']) {
+                          Map map = new Map();
+                          map.putIfAbsent('name', () => sr.title);
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SecondProjectPage(
+                              project: new Project(map),
+                              projectList: new List(),
+                              staffList: Staff.buildList(response.data['data'])))
+                          );
+                        }
+                      }
+                    },
+                  ),
+                  margin: const EdgeInsets.all(0.0),
+                );
+              },
+            )
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const SizedBox(height: 64.0),
-            Text('Last selected integer: ${_lastIntegerSelected ?? 'NONE' }.')
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SearchDemoSearchDelegate extends SearchDelegate<int> {
-  final List<int> _data = List<int>.generate(100001, (int i) => i).reversed.toList();
-  final List<int> _history = <int>[42607, 85604, 66374, 44, 174];
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      tooltip: 'Back',
-      icon: AnimatedIcon(
-        icon: AnimatedIcons.menu_arrow,
-        progress: transitionAnimation,
-      ),
-      onPressed: () {
-        close(context, null);
-      },
     );
   }
 
-  @override
-  Widget buildSuggestions(BuildContext context) {
-
-    final Iterable<int> suggestions = query.isEmpty
-        ? _history
-        : _data.where((int i) => '$i'.startsWith(query));
-
-    return _SuggestionList(
-      query: query,
-      suggestions: suggestions.map<String>((int i) => '$i').toList(),
-      onSelected: (String suggestion) {
-        query = suggestion;
-        showResults(context);
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    final int searched = int.tryParse(query);
-    if (searched == null || !_data.contains(searched)) {
-      return Center(
-        child: Text(
-          '"$query"\n is not a valid integer between 0 and 100,000.\nTry again.',
-          textAlign: TextAlign.center,
-        ),
-      );
+  onSearchTextChanged(String text) async {
+    _searchResult.clear();
+    if (text.isEmpty) {
+      setState(() {});
+      return;
     }
 
-    return ListView(
-      children: <Widget>[
-        _ResultCard(
-          title: 'This integer',
-          integer: searched,
-          searchDelegate: this,
-        ),
-      ],
-    );
-  }
+    Response response = await api.search(text);
+    print(response.data);
 
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return <Widget>[
-      IconButton(
-        tooltip: 'Clear',
-        icon: const Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-          showSuggestions(context);
-        },
-      )
-    ];
-  }
-}
-
-class _ResultCard extends StatelessWidget {
-  const _ResultCard({this.integer, this.title, this.searchDelegate});
-
-  final int integer;
-  final String title;
-  final SearchDelegate<int> searchDelegate;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return GestureDetector(
-      onTap: () {
-        searchDelegate.close(context, integer);
-      },
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              Text(title),
-              Text(
-                '$integer',
-                style: theme.textTheme.headline.copyWith(fontSize: 72.0),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SuggestionList extends StatelessWidget {
-  const _SuggestionList({this.suggestions, this.query, this.onSelected});
-
-  final List<String> suggestions;
-  final String query;
-  final ValueChanged<String> onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return ListView.builder(
-      itemCount: suggestions.length,
-      itemBuilder: (BuildContext context, int i) {
-        final String suggestion = suggestions[i];
-        return ListTile(
-          leading: query.isEmpty ? const Icon(Icons.history) : const Icon(null),
-          title: RichText(
-            text: TextSpan(
-              text: suggestion.substring(0, query.length),
-              style: theme.textTheme.subhead.copyWith(fontWeight: FontWeight.bold),
-              children: <TextSpan>[
-                TextSpan(
-                  text: suggestion.substring(query.length),
-                  style: theme.textTheme.subhead,
-                ),
-              ],
-            ),
-          ),
-          onTap: () {
-            onSelected(suggestion);
-          },
-        );
-      },
-    );
+    setState(() {
+      for(Map map in response.data['data']) {
+        _searchResult.add(SearchResult(map['id'], map['type'], map['title']));
+      }
+    });
   }
 }

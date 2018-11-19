@@ -22,6 +22,7 @@ dependencies:
   english_words: ^3.1.0
   dio: 1.0.6
   shared_preferences: 0.4.3
+  http: 0.12.0
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +48,10 @@ flutter:
       - images/lake.jpg
       - images/diamond.png
 
+  fonts:
+  - family: zlihj
+    fonts:
+      - asset: fonts/iconfont.ttf
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
 

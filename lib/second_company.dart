@@ -23,9 +23,9 @@ class SecondCompanyPage extends StatelessWidget {
 
     for(Staff s in staffList) {
       list.add(ListTile(
-          leading: new CircleAvatar(child: new Text(s.name)),
+          leading: new CircleAvatar(child: new Text(String.fromCharCode(s.name.codeUnitAt(0)))),
           title: new Text(s.name),
-          subtitle: new Text(s.name),
+          subtitle: new Text(s.workType),
           onTap: () {
             s.setPname(company.getName);
             Navigator.push(context, MaterialPageRoute(builder: (context) => ContactsDemo(s)));
@@ -35,7 +35,7 @@ class SecondCompanyPage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('First Screen'),
+          title: Text(company.getName),
         ),
         body: ListView(
           padding: new EdgeInsets.symmetric(vertical: 8.0),
