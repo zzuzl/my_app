@@ -12,19 +12,18 @@ class Api {
   static const String BASE = "http://www.zlihj.cn/";
   static final Dio dio = new Dio();
   static SharedPreferences sp = null;
+  static final int COMPANY_SOURCE = 0;
+  static final int Project_SOURCE = 1;
 
   Api() {
     dio.interceptor.request.onSend = (Options options) {
       options.contentType=ContentType.parse("application/x-www-form-urlencoded");
       options.headers = {TOKEN_KEY: token};
 
-      print("send token:${token}");
       return options;
     };
     dio.interceptor.response.onSuccess = (Response response) {
       String token = response.headers.value(TOKEN_KEY);
-      print("success token:${token}");
-
       if (token != null && token.length > 0) {
         storeToken(token);
       }
@@ -39,13 +38,13 @@ class Api {
   }
 
   void initSp() async {
-    const MethodChannel('plugins.flutter.io/shared_preferences')
+    /*const MethodChannel('plugins.flutter.io/shared_preferences')
         .setMockMethodCallHandler((MethodCall methodCall) async {
       if (methodCall.method == 'getAll') {
         return <String, dynamic>{}; // set initial values here if desired
       }
       return null;
-    });
+    });*/
     if (sp == null) {
       sp = await SharedPreferences.getInstance();
       token = sp.getString(TOKEN_KEY);
