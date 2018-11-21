@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'Staff.dart';
 import 'MyIcon.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class _ContactCategory extends StatelessWidget {
   const _ContactCategory({Key key, this.icon, this.children}) : super(key: key);
@@ -37,27 +38,6 @@ class _ContactCategory extends StatelessWidget {
   }
 }
 
-class _ContactItem extends StatelessWidget {
-  _ContactItem({Key key, this.lines})
-      : assert(lines.length > 0),
-        super(key: key);
-
-  final List<String> lines;
-
-  @override
-  Widget build(BuildContext context) {
-    String text = lines.first == null ? '' : lines.first;
-
-    return ListTile(
-      title: Text(text,
-          style: TextStyle(fontWeight: FontWeight.w300)),
-      onLongPress: () {
-        Clipboard.setData(new ClipboardData(text: text));
-      },
-    );
-  }
-}
-
 class ContactsDemo extends StatefulWidget {
   final Staff staff;
 
@@ -74,6 +54,10 @@ class ContactsDemoState extends State<ContactsDemo> {
   final Staff staff;
 
   ContactsDemoState(this.staff);
+
+  String getText(String s) {
+    return s == null ? '' : s;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,105 +86,136 @@ class ContactsDemoState extends State<ContactsDemo> {
                 _ContactCategory(
                   icon: Icons.contacts,
                   children: <Widget>[
-                    _ContactItem(
-                      lines: <String>[
-                        staff.pname,
-                      ],
+                    ListTile(
+                      title: Text(getText(staff.pname),
+                          style: TextStyle(fontWeight: FontWeight.w300)),
+                      onLongPress: () {
+                        Clipboard.setData(new ClipboardData(text: getText(staff.pname)));
+                      },
                     ),
                   ],
                 ),
                 _ContactCategory(
                   icon: Icons.domain,
                   children: <Widget>[
-                    _ContactItem(
-                      lines: <String>[
-                        staff.workType,
-                      ],
+                    ListTile(
+                      title: Text(getText(staff.workType),
+                          style: TextStyle(fontWeight: FontWeight.w300)),
+                      onLongPress: () {
+                        Clipboard.setData(new ClipboardData(text: getText(staff.workType)));
+                      },
                     ),
                   ],
                 ),
                 _ContactCategory(
                   icon: Icons.cake,
                   children: <Widget>[
-                    _ContactItem(
-                      lines: <String>[
-                        staff.birthday,
-                      ],
+                    ListTile(
+                      title: Text(getText(staff.birthday),
+                          style: TextStyle(fontWeight: FontWeight.w300)),
+                      onLongPress: () {
+                        Clipboard.setData(new ClipboardData(text: getText(staff.birthday)));
+                      },
                     ),
                   ],
                 ),
                 _ContactCategory(
                   icon: Icons.email,
                   children: <Widget>[
-                    _ContactItem(
-                      lines: <String>[
-                        staff.email,
-                      ],
+                    ListTile(
+                      title: Text(getText(staff.email),
+                          style: TextStyle(fontWeight: FontWeight.w300)),
+                      onLongPress: () {
+                        Clipboard.setData(new ClipboardData(text: getText(staff.email)));
+                      },
                     ),
                   ],
                 ),
                 _ContactCategory(
                   icon: MyIcon.qq,
                   children: <Widget>[
-                    _ContactItem(
-                      lines: <String>[
-                        staff.qq,
-                      ],
+                    ListTile(
+                      title: Text(getText(staff.qq),
+                          style: TextStyle(fontWeight: FontWeight.w300)),
+                      onLongPress: () {
+                        Clipboard.setData(new ClipboardData(text: getText(staff.qq)));
+                      },
                     ),
                   ],
                 ),
                 _ContactCategory(
                   icon: MyIcon.wx,
                   children: <Widget>[
-                    _ContactItem(
-                      lines: <String>[
-                        staff.wx,
-                      ],
+                    ListTile(
+                      title: Text(getText(staff.wx),
+                          style: TextStyle(fontWeight: FontWeight.w300)),
+                      onLongPress: () {
+                        Clipboard.setData(new ClipboardData(text: getText(staff.wx)));
+                      },
                     ),
                   ],
                 ),
                 _ContactCategory(
                   icon: Icons.account_box,
                   children: <Widget>[
-                    _ContactItem(
-                      lines: <String>[
-                        staff.gxtAccount,
-                      ],
+                    ListTile(
+                      title: Text(getText(staff.gxtAccount),
+                          style: TextStyle(fontWeight: FontWeight.w300)),
+                      onLongPress: () {
+                        Clipboard.setData(new ClipboardData(text: getText(staff.gxtAccount)));
+                      },
                     ),
                   ],
                 ),
                 _ContactCategory(
                   icon: Icons.call,
                   children: <Widget>[
-                    _ContactItem(
-                      lines: <String>[
-                        staff.phone,
-                      ],
+                    ListTile(
+                      title: Text(getText(staff.phone),
+                          style: TextStyle(fontWeight: FontWeight.w300)),
+                      onLongPress: () {
+                        Clipboard.setData(new ClipboardData(text: getText(staff.phone)));
+                      },
+                      trailing: IconButton(
+                        icon: const Icon(Icons.call),
+                        onPressed: () async {
+                          String url = 'tel:' + staff.phone;
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          }
+                        },
+                      ),
                     ),
                   ],
                 ),
                 _ContactCategory(
                   icon: Icons.location_on,
                   children: <Widget>[
-                    _ContactItem(
-                      lines: <String>[
-                        staff.workAddress,
-                      ],
+                    ListTile(
+                      title: Text(getText(staff.workAddress),
+                          style: TextStyle(fontWeight: FontWeight.w300)),
+                      onLongPress: () {
+                        Clipboard.setData(new ClipboardData(text: getText(staff.workAddress)));
+                      },
                     ),
                   ],
                 ),
                 _ContactCategory(
                   icon: Icons.school,
                   children: <Widget>[
-                    _ContactItem(
-                      lines: <String>[
-                        staff.school,
-                      ],
+                    ListTile(
+                      title: Text(getText(staff.school),
+                          style: TextStyle(fontWeight: FontWeight.w300)),
+                      onLongPress: () {
+                        Clipboard.setData(new ClipboardData(text: getText(staff.school)));
+                      },
                     ),
-                    _ContactItem(
-                      lines: <String>[
-                        staff.major,
-                      ],
+                    ListTile(
+                      title: Text(getText(staff.major),
+                          style: TextStyle(fontWeight: FontWeight.w300)),
+                      onLongPress: () {
+                        Clipboard.setData(new ClipboardData(text: getText(staff.major)));
+                      },
                     ),
                   ],
                 ),
