@@ -46,24 +46,14 @@ class _ContactItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> columnChildren = <Widget>[
-      Text(lines.first == null ? '' : lines.first,
-          style: TextStyle(fontWeight: FontWeight.w300))
-    ];
+    String text = lines.first == null ? '' : lines.first;
 
-    final List<Widget> rowChildren = <Widget>[
-      Expanded(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: columnChildren))
-    ];
-
-    return MergeSemantics(
-      child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: rowChildren)),
+    return ListTile(
+      title: Text(text,
+          style: TextStyle(fontWeight: FontWeight.w300)),
+      onLongPress: () {
+        Clipboard.setData(new ClipboardData(text: text));
+      },
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Staff.dart';
 import 'MyIcon.dart';
+import 'package:flutter/services.dart';
 
 class MePage extends StatelessWidget {
   final Staff staff;
@@ -20,6 +21,9 @@ class MePage extends StatelessWidget {
               Icons.contacts,
               color: Colors.blue[500],
             ),
+            onLongPress: () {
+              Clipboard.setData(new ClipboardData(text: staff.name));
+            },
           ),
           Divider(),
           ListTile(
@@ -28,6 +32,9 @@ class MePage extends StatelessWidget {
               Icons.domain,
               color: Colors.blue[500],
             ),
+            onLongPress: () {
+              Clipboard.setData(new ClipboardData(text: staff.pname));
+            },
           ),
           ListTile(
             title: Text(staff.phone),
@@ -35,6 +42,9 @@ class MePage extends StatelessWidget {
               Icons.call,
               color: Colors.blue[500],
             ),
+            onLongPress: () {
+              Clipboard.setData(new ClipboardData(text: staff.phone));
+            },
           ),
           ListTile(
             title: Text(staff.email),
@@ -42,6 +52,9 @@ class MePage extends StatelessWidget {
               Icons.email,
               color: Colors.blue[500],
             ),
+            onLongPress: () {
+              Clipboard.setData(new ClipboardData(text: staff.email));
+            },
           ),
           ListTile(
             title: Text(staff.qq),
@@ -49,6 +62,9 @@ class MePage extends StatelessWidget {
               MyIcon.qq,
               color: Colors.blue[500],
             ),
+            onLongPress: () {
+              Clipboard.setData(new ClipboardData(text: staff.qq));
+            },
           ),
           ListTile(
             title: Text(staff.wx),
@@ -56,6 +72,9 @@ class MePage extends StatelessWidget {
               MyIcon.wx,
               color: Colors.blue[500],
             ),
+            onLongPress: () {
+              Clipboard.setData(new ClipboardData(text: staff.wx));
+            },
           ),
           ListTile(
             title: Text(staff.gxtAccount),
@@ -63,6 +82,9 @@ class MePage extends StatelessWidget {
               Icons.account_box,
               color: Colors.blue[500],
             ),
+            onLongPress: () {
+              Clipboard.setData(new ClipboardData(text: staff.gxtAccount));
+            },
           ),
           ListTile(
             title: Text(staff.workAddress),
@@ -70,6 +92,9 @@ class MePage extends StatelessWidget {
               Icons.location_on,
               color: Colors.blue[500],
             ),
+            onLongPress: () {
+              Clipboard.setData(new ClipboardData(text: staff.workAddress));
+            },
           ),
           ListTile(
             title: Text(staff.birthday),
@@ -77,6 +102,9 @@ class MePage extends StatelessWidget {
               Icons.cake,
               color: Colors.blue[500],
             ),
+            onLongPress: () {
+              Clipboard.setData(new ClipboardData(text: staff.birthday));
+            },
           ),
         ],
       ),
