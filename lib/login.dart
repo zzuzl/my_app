@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
       buttonEnabled = false;
     });
     Response response =
-        await api.login("672399171@qq.com", "123456.com");
+        await api.login(_usernameController.text, _passwordController.text);
     if (response.data['success']) {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(staff: Staff(response.data['data']))));
     } else {

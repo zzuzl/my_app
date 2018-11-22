@@ -46,7 +46,6 @@ flutter:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
   assets:
-      - images/lake.jpg
       - images/diamond.png
 
   fonts:

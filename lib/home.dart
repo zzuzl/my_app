@@ -9,6 +9,7 @@ import 'Staff.dart';
 import 'second_company.dart';
 import 'second_project.dart';
 import 'me.dart';
+import 'search.dart';
 
 class MyHomePage extends StatefulWidget {
   final Staff staff;
@@ -99,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              Navigator.pushNamed(context, '/search');
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage()));
             },
           ),
         ],
@@ -147,7 +148,9 @@ class _MyHomePageState extends State<MyHomePage> {
     } else if (index == 1) {
       getProject(index);
     } else {
-      getCompany(index);
+      setState(() {
+        _selectedIndex = index;
+      });
     }
   }
 }

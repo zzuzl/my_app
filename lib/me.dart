@@ -79,7 +79,7 @@ class MePage extends StatelessWidget {
           ListTile(
             title: Text(staff.gxtAccount),
             leading: Icon(
-              Icons.account_box,
+              MyIcon.gxt,
               color: Colors.blue[500],
             ),
             onLongPress: () {

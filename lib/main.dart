@@ -15,12 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '中原分公司数字人事',
-      initialRoute: '/',
-      routes: {
-        '/': (context) => LaunchPage(),
-        '/login': (context) => LoginPage(),
-        '/search': (context) => SearchPage(),
-      },
+      home: LaunchPage(),
     );
   }
 }
@@ -41,9 +36,17 @@ class LaunchPage extends StatelessWidget {
   void checkToken(BuildContext context) async {
     Response response = await api.checkToken();
     if (response.data['success']) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(staff: Staff(response.data['data']))));
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MyHomePage(staff: Staff(response.data['data']))),
+            (Route<dynamic> route) { return false; },
+      );
     } else {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+        (Route<dynamic> route) { return false; },
+      );
     }
   }
 

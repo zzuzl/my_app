@@ -156,7 +156,7 @@ class ContactsDemoState extends State<ContactsDemo> {
                   ],
                 ),
                 _ContactCategory(
-                  icon: Icons.account_box,
+                  icon: MyIcon.gxt,
                   children: <Widget>[
                     ListTile(
                       title: Text(getText(staff.gxtAccount),
