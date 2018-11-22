@@ -31,13 +31,11 @@ class Api {
       return response; // continue
     };
     dio.interceptor.response.onError = (DioError e){
-      // print('出错了');
       return  e;//continue
     };
-    initSp();
   }
 
-  void initSp() async {
+  void initSp(SharedPreferences s) {
     /*const MethodChannel('plugins.flutter.io/shared_preferences')
         .setMockMethodCallHandler((MethodCall methodCall) async {
       if (methodCall.method == 'getAll') {
@@ -45,10 +43,9 @@ class Api {
       }
       return null;
     });*/
-    if (sp == null) {
-      sp = await SharedPreferences.getInstance();
-      token = sp.getString(TOKEN_KEY);
-    }
+    sp = s;
+    token = sp.getString(TOKEN_KEY);
+    print('init token:${token}');
   }
 
   Future<Response> login(String email, String password) {

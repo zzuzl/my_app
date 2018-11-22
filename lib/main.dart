@@ -6,6 +6,7 @@ import 'login.dart';
 import 'home.dart';
 import 'Staff.dart';
 import 'search.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,7 +25,10 @@ class LaunchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    checkToken(context);
+    SharedPreferences.getInstance().then((SharedPreferences sp) {
+      api.initSp(sp);
+      checkToken(context);
+    });
 
     return Scaffold(
       body: Center(
