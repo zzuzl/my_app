@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'Staff.dart';
 import 'MyIcon.dart';
 import 'package:flutter/services.dart';
+import 'helper.dart';
+import 'login.dart';
 
 class MePage extends StatelessWidget {
   final Staff staff;
@@ -105,6 +107,20 @@ class MePage extends StatelessWidget {
             onLongPress: () {
               Clipboard.setData(new ClipboardData(text: staff.birthday));
             },
+          ),
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: double.infinity),
+            child: RaisedButton(
+              child: new Text("退 出"),
+              onPressed: () {
+                api.logout();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                      (Route<dynamic> route) { return false; },
+                );
+              },
+            ),
           ),
         ],
       ),

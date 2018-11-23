@@ -53,10 +53,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
                   ListTile(
                     title: Text(list[index].getName,
-                        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20.0)),
+                        style: TextStyle(fontWeight: FontWeight.w300)),
                     // subtitle: Text('85 W Portal Ave'),
                     leading: Icon(
-                      _selectedIndex == 0 ? Icons.bookmark_border: Icons.bookmark,
+                      _selectedIndex == 0 ? Icons.bookmark_border: Icons.domain,
                       color: Colors.blue[500],
                     ),
                     onTap: () async {
@@ -123,6 +123,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
   void getCompany(int index) async {
+    if (companyList != null && companyList.length > 0) {
+      setState(() {
+        _selectedIndex = index;
+      });
+      return;
+    }
     Response response = await api.listCompany(0);
     List<Company> companys = Company.buildList(response.data['data']);
 
@@ -133,6 +139,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void getProject(int index) async {
+    if (projectList != null && projectList.length > 0) {
+      setState(() {
+        _selectedIndex = index;
+      });
+      return;
+    }
+
     Response response = await api.listProject(0);
     List<Project> projects = Project.buildList(response.data['data']);
 

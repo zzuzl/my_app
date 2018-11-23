@@ -5,7 +5,7 @@ class Staff {
   String _name;
   int _pid;
   String _pname;
-  Map _workType;
+  String _workType;
   int _gender;
   String _birthday;
   String _school;
@@ -50,7 +50,7 @@ class Staff {
 
   int get pid => _pid;
   
-  String get workType => _workType['name'];
+  String get workType => _workType;
   
   String get name => _name;
   

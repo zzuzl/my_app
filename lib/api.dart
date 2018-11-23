@@ -30,9 +30,9 @@ class Api {
 
       return response; // continue
     };
-    dio.interceptor.response.onError = (DioError e){
+    /*dio.interceptor.response.onError = (DioError e){
       return  e;//continue
-    };
+    };*/
   }
 
   void initSp(SharedPreferences s) {
@@ -53,6 +53,10 @@ class Api {
       "user": email,
       "password": password
     });
+  }
+
+  void logout() {
+    sp.remove(TOKEN_KEY);
   }
 
   Future<Response> search(String key) {
