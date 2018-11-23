@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'helper.dart';
 import 'package:dio/dio.dart';
 import 'dart:io';
@@ -7,7 +9,6 @@ import 'home.dart';
 import 'Staff.dart';
 import 'search.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,6 +24,16 @@ class MyApp extends StatelessWidget {
 }
 
 class LaunchPage extends StatelessWidget {
+  static const platform = const MethodChannel('samples.flutter.io/battery');
+
+  Future<dynamic> installApk(String filePath) {
+    try {
+      return platform.invokeMethod('installApk', {'filePath': filePath});
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +43,7 @@ class LaunchPage extends StatelessWidget {
       // 检查最新版本
       String newVersion = "1.0.1";
 
-      if (Platform.isAndroid) {
+      if (Platform.isAndroid || Platform.isIOS) {
         showDialog<void>(
           context: context,
           barrierDismissible: false, // user must tap button!
@@ -49,12 +60,13 @@ class LaunchPage extends StatelessWidget {
                 FlatButton(
                   child: Text('确定'),
                   onPressed: () async {
-                    String path = './app.apk';
-                    api.download('https://zlihj-zpk-1251746773.cos.ap-beijing.myqcloud.com/app-release.apk', path);
-                    String url = 'file://' + path;
-                    if (await canLaunch(url)) {
-                      await launch(url);
-                    }
+                    Directory directory = await getTemporaryDirectory();
+                    String path = directory.path + '/app.apk';
+
+                    api.download('https://zlihj-zpk-1251746773.cos.ap-beijing.myqcloud.com/app-release.apk', path)
+                    .then((Response response) async {
+                      await installApk(path);
+                    });
                     // Navigator.of(context).pop();
                   },
                 ),

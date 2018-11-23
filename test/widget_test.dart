@@ -9,6 +9,7 @@ import 'package:dio/dio.dart';
 import 'dart:io';
 import 'package:my_app/helper.dart';
 import 'package:my_app/Company.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() {
   test('test get', () async {
@@ -47,6 +48,14 @@ void main() {
     String path = "/Users/zhanglei53/files";
     Response response = await api.download(url, path + "/app.apk");
 
-    print(response);
+    Directory directory = await getExternalStorageDirectory();
+
+    print(directory.path);
+  });
+
+  test('test path', () async {
+    Directory directory = await getExternalStorageDirectory();
+
+    print(directory.path);
   });
 }

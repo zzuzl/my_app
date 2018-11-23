@@ -1,14 +1,9 @@
 package com.yourcompany.myapp;
 
-import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.BatteryManager;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import java.io.File;
 
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodCall;
@@ -28,9 +23,10 @@ public class MainActivity extends FlutterActivity {
             new MethodChannel.MethodCallHandler() {
               @Override
               public void onMethodCall(MethodCall call, Result result) {
-                if (call.method.equals("getBatteryLevel")) {
+                if (call.method.equals("installApk")) {
                     try {
-                        result.success(getVersionName());
+                        installApk(String.valueOf(call.argument("filePath")));
+                        result.success("success");
                     } catch (Exception e) {
                         result.error("error:", e.getMessage(), e);
                     }
@@ -41,27 +37,13 @@ public class MainActivity extends FlutterActivity {
             });
   }
 
-  /*
-   * 获取当前程序的版本名
-   */
-  private String getVersionName() throws Exception {
-    PackageManager packageManager = getPackageManager();
-    PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(), 0);
-    return packInfo.versionName;
-  }
 
-  private int getBatteryLevel() {
-    int batteryLevel = -1;
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      BatteryManager batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
-      batteryLevel = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-    } else {
-      Intent intent = new ContextWrapper(getApplicationContext()).
-              registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-      batteryLevel = (intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) * 100) /
-              intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-    }
+  private void installApk(String fiePath) {
+      Intent install = new Intent(Intent.ACTION_VIEW);
+      install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      File apkFile = new File(fiePath);
+      install.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
 
-    return batteryLevel;
+      startActivity(install);
   }
 }

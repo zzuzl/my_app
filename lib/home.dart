@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'login.dart';
 import 'helper.dart';
 import 'package:dio/dio.dart';
@@ -23,7 +22,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static const platform = const MethodChannel('samples.flutter.io/battery');
   int _selectedIndex = 0;
   List<Company> companyList;
   List<Project> projectList;
@@ -155,20 +153,6 @@ class _MyHomePageState extends State<MyHomePage> {
       _selectedIndex = index;
       this.projectList = projects;
     });
-  }
-
-  Future<void> _getBatteryLevel() async {
-    String batteryLevel;
-    try {
-      final int result = await platform.invokeMethod('getBatteryLevel');
-      batteryLevel = 'Battery level at $result % .';
-    } on PlatformException catch (e) {
-      batteryLevel = "Failed to get battery level: '${e.message}'.";
-    }
-
-    /*setState(() {
-      _batteryLevel = batteryLevel;
-    });*/
   }
 
   void _onItemTapped(int index) {
