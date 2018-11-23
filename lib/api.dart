@@ -91,6 +91,10 @@ class Api {
     return dio.get(BASE + "rest/checkLogin");
   }
 
+  Future<Response> download(String uri, String savePath) {
+    return dio.download(uri, savePath);
+  }
+
   void storeToken(String _token) {
     token = _token;
     sp.setString(TOKEN_KEY, token);

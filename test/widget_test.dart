@@ -41,4 +41,12 @@ void main() {
     response = await api.listCompany(0);
     print(response.headers);
   });
+
+  test('test download', () async {
+    String url = "https://zlihj-zpk-1251746773.cos.ap-beijing.myqcloud.com/app-release.apk";
+    String path = "/Users/zhanglei53/files";
+    Response response = await api.download(url, path + "/app.apk");
+
+    print(response);
+  });
 }
