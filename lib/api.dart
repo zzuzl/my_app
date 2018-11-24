@@ -95,6 +95,10 @@ class Api {
     return dio.download(uri, savePath);
   }
 
+  Future<Response> checkVersion() {
+    return dio.get(BASE + "rest/checkVersion");
+  }
+
   void storeToken(String _token) {
     token = _token;
     sp.setString(TOKEN_KEY, token);

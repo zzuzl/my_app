@@ -17,6 +17,8 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   TextEditingController controller = new TextEditingController();
   List<SearchResult> _searchResult = new List();
+  bool empty = false;
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -48,73 +50,90 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
           ),
+          loading ? Container(
+            margin: const EdgeInsets.all(50.0),
+            child: CircularProgressIndicator(),
+          ) :
           new Expanded(
-            child: new ListView.builder(
-              itemCount: _searchResult.length,
-              itemBuilder: (context, i) {
-                return new Card(
-                  child: new ListTile(
-                    leading: Icon(
-                      _searchResult[i].type == 1 ? Icons.contacts : Icons.domain,
-                      color: Colors.blue[500],
-                    ),
-                    title: new Text(_searchResult[i].title),
-                    onTap: () async {
-                      SearchResult sr = _searchResult[i];
-                      if (sr.type == 1) {
-                        Response response = await api.getStaff(sr.id);
-                        if (response.data['success']) {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ContactsDemo(Staff(response.data['data']))));
-                        }
-                      } else if (sr.type == 2) {
-                        Response response = await api.listStaff(sr.id, 1, 0);
-                        if (response.data['success']) {
-                          Map map = new Map();
-                          map.putIfAbsent('name', () => sr.title);
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SecondCompanyPage(
-                              company: new Company(map),
-                              companyList: new List(),
-                              staffList: Staff.buildList(response.data['data'])))
-                          );
-                        }
-                      } else if (sr.type == 3) {
-                        Response response = await api.listStaff(sr.id, 1, 1);
-                        if (response.data['success']) {
-                          Map map = new Map();
-                          map.putIfAbsent('name', () => sr.title);
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SecondProjectPage(
-                              project: new Project(map),
-                              projectList: new List(),
-                              staffList: Staff.buildList(response.data['data'])))
-                          );
-                        }
-                      }
-                    },
-                  ),
-                  margin: const EdgeInsets.all(0.0),
-                );
-              },
-            )
+            child: empty ? Center(child: Text('无结果'),) : buildList()
           ),
         ],
       ),
     );
   }
 
+  Widget buildList() {
+    return new ListView.builder(
+      itemCount: _searchResult.length,
+      itemBuilder: (context, i) {
+        return new Card(
+          child: new ListTile(
+            leading: Icon(
+              _searchResult[i].type == 1 ? Icons.contacts : Icons.domain,
+              color: Colors.blue[500],
+            ),
+            title: new Text(_searchResult[i].title),
+            onTap: () async {
+              SearchResult sr = _searchResult[i];
+              if (sr.type == 1) {
+                Response response = await api.getStaff(sr.id);
+                if (response.data['success']) {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ContactsDemo(Staff(response.data['data']))));
+                }
+              } else if (sr.type == 2) {
+                Response response = await api.listStaff(sr.id, 1, 0);
+                if (response.data['success']) {
+                  Map map = new Map();
+                  map.putIfAbsent('name', () => sr.title);
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SecondCompanyPage(
+                      company: new Company(map),
+                      companyList: new List(),
+                      staffList: Staff.buildList(response.data['data'])))
+                  );
+                }
+              } else if (sr.type == 3) {
+                Response response = await api.listStaff(sr.id, 1, 1);
+                if (response.data['success']) {
+                  Map map = new Map();
+                  map.putIfAbsent('name', () => sr.title);
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SecondProjectPage(
+                      project: new Project(map),
+                      projectList: new List(),
+                      staffList: Staff.buildList(response.data['data'])))
+                  );
+                }
+              }
+            },
+          ),
+          margin: const EdgeInsets.all(0.0),
+        );
+      },
+    );
+  }
+
   onSearchTextChanged(String text) async {
     _searchResult.clear();
     if (text.isEmpty) {
+      this.loading = false;
+      this.empty = false;
+
       setState(() {});
       return;
     }
 
-    Response response = await api.search(text);
-    print(response.data);
-
     setState(() {
-      for(Map map in response.data['data']) {
-        _searchResult.add(SearchResult(map['id'], map['type'], map['title']));
-      }
+      this.loading = true;
+    });
+
+    Response response = await api.search(text);
+    // print(response.data);
+
+    for(Map map in response.data['data']) {
+      _searchResult.add(SearchResult(map['id'], map['type'], map['title']));
+    }
+    setState(() {
+      this.empty = _searchResult.isEmpty;
+      this.loading = false;
     });
   }
 }

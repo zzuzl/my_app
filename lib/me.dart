@@ -13,7 +13,7 @@ class MePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: ListView(
         children: <Widget>[
           ListTile(
             title: Text(staff.name,
@@ -108,19 +108,17 @@ class MePage extends StatelessWidget {
               Clipboard.setData(new ClipboardData(text: staff.birthday));
             },
           ),
-          ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: double.infinity),
-            child: RaisedButton(
-              child: new Text("退 出"),
-              onPressed: () {
-                api.logout();
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                      (Route<dynamic> route) { return false; },
-                );
-              },
-            ),
+          RaisedButton(
+            child: new Text("退 出"),
+            color: Colors.redAccent,
+            onPressed: () {
+              api.logout();
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+                    (Route<dynamic> route) { return false; },
+              );
+            },
           ),
         ],
       ),
