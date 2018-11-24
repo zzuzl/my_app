@@ -2,7 +2,10 @@ package com.yourcompany.myapp;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
+
 import java.io.File;
 
 import io.flutter.app.FlutterActivity;
@@ -24,8 +27,9 @@ public class MainActivity extends FlutterActivity {
               @Override
               public void onMethodCall(MethodCall call, Result result) {
                 if (call.method.equals("installApk")) {
+
                     try {
-                        installApk(String.valueOf(call.argument("filePath")));
+                        installApk((String) call.argument("filePath"));
                         result.success("success");
                     } catch (Exception e) {
                         result.error("error:", e.getMessage(), e);
@@ -39,11 +43,20 @@ public class MainActivity extends FlutterActivity {
 
 
   private void installApk(String fiePath) {
-      Intent install = new Intent(Intent.ACTION_VIEW);
-      install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      Intent intent = new Intent(Intent.ACTION_VIEW);
+      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       File apkFile = new File(fiePath);
-      install.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
 
-      startActivity(install);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+          System.out.println("high");
+          intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+          Uri contentUri = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".fileProvider", apkFile);
+          intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+      } else {
+          intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+          intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      }
+
+      startActivity(intent);
   }
 }

@@ -9,6 +9,7 @@ import 'home.dart';
 import 'Staff.dart';
 import 'search.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,7 +29,9 @@ class LaunchPage extends StatelessWidget {
 
   Future<dynamic> installApk(String filePath) {
     try {
-      return platform.invokeMethod('installApk', {'filePath': filePath});
+      Map<String, String> map = new Map();
+      map['filePath'] = filePath;
+      return platform.invokeMethod('installApk', map);
     } on PlatformException catch (e) {
       print(e);
     }
@@ -43,8 +46,34 @@ class LaunchPage extends StatelessWidget {
       // 检查最新版本
       String newVersion = "1.0.1";
 
-      if (Platform.isAndroid || Platform.isIOS) {
-        showDialog<void>(
+      if (Platform.isAndroid) {
+        PermissionHandler().checkPermissionStatus(PermissionGroup.storage)
+        .then((PermissionStatus status) {
+          if (status != PermissionStatus.granted) {
+            PermissionHandler().requestPermissions([PermissionGroup.storage])
+                .then((Map<PermissionGroup, PermissionStatus> map) {
+              if (map[PermissionGroup.storage] == PermissionStatus.granted) {
+                goNext(context);
+              }
+            });
+          } else {
+            goNext(context);
+          }
+        });
+      } else {
+        checkToken(context);
+      }
+    });
+
+    return Scaffold(
+      body: Center(
+        child: const CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  void goNext(BuildContext context) {
+    showDialog<void>(
           context: context,
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
@@ -60,8 +89,8 @@ class LaunchPage extends StatelessWidget {
                 FlatButton(
                   child: Text('确定'),
                   onPressed: () async {
-                    Directory directory = await getTemporaryDirectory();
-                    String path = directory.path + '/app.apk';
+                    Directory directory = await getExternalStorageDirectory();
+                    String path = directory.path + '/tmp/app.apk';
 
                     api.download('https://zlihj-zpk-1251746773.cos.ap-beijing.myqcloud.com/app-release.apk', path)
                     .then((Response response) async {
@@ -74,16 +103,7 @@ class LaunchPage extends StatelessWidget {
             );
           },
         );
-      } else {
-        checkToken(context);
-      }
-    });
-
-    return Scaffold(
-      body: Center(
-        child: const CircularProgressIndicator(),
-      ),
-    );
+    // checkToken(context);
   }
 
   void checkToken(BuildContext context) async {
