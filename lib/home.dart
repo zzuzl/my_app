@@ -61,24 +61,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     onTap: () async {
                       int id = list[index].getId;
-                      Response _response = await api.listStaff(id, 1, _selectedIndex == 0 ? 0 : 1);
 
                       if (_selectedIndex == 0) {
-                        Response response = await api.listCompany(id);
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => SecondCompanyPage(
                             company: list[index],
-                            companyList: Company.buildList(response.data['data']),
-                            staffList: Staff.buildList(_response.data['data']),
                           ),
                         ));
                       } else if (_selectedIndex == 1) {
-                        Response response = await api.listProject(id);
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => SecondProjectPage(
                             project: list[index],
-                            projectList: Project.buildList(response.data['data']),
-                            staffList: Staff.buildList(_response.data['data']),
                           ),
                         ));
                       }

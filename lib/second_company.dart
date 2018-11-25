@@ -7,10 +7,10 @@ import 'helper.dart';
 
 class SecondCompanyPage extends StatefulWidget {
   final Company company;
-  final List<Company> companyList;
-  final List<Staff> staffList;
+  List<Company> companyList;
+  List<Staff> staffList;
 
-  SecondCompanyPage({Key key, @required this.company, @required this.companyList, @required this.staffList}) : super(key: key);
+  SecondCompanyPage({Key key, @required this.company}) : super(key: key);
 
   @override
   _SecondCompanyPageState createState() => _SecondCompanyPageState();
@@ -18,12 +18,15 @@ class SecondCompanyPage extends StatefulWidget {
 
 class _SecondCompanyPageState extends State<SecondCompanyPage> {
   ScrollController _scrollController = new ScrollController();
-  int _page = 2;
-  bool _request = false;
+  static final int SOURCE = 0;
+  int _page = 1;
+  bool _request = true;
 
   @override
   void initState() {
     super.initState();
+
+    this.initData();
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent
@@ -39,13 +42,29 @@ class _SecondCompanyPageState extends State<SecondCompanyPage> {
     super.dispose();
   }
 
+  void initData() async {
+    Response response = await api.listCompany(widget.company.id);
+    Response staffResponse = await api.listStaff(widget.company.id, _page, SOURCE);
+
+    setState(() {
+      if (response.data['success']) {
+        widget.companyList = Company.buildList(response.data['data']);
+      }
+      if (staffResponse.data['success']) {
+        widget.staffList = Staff.buildList(staffResponse.data['data']);
+      }
+      _request = false;
+    });
+    _page ++;
+  }
+
   void getMore() async {
     setState(() {
       _request = true;
     });
 
     List<Staff> list;
-    Response response = await api.listStaff(widget.company.id, _page, 0);
+    Response response = await api.listStaff(widget.company.id, _page, SOURCE);
     if (response.data['success']) {
       list = Staff.buildList(response.data['data']);
       if (list == null || list.length < 1) {
@@ -72,7 +91,9 @@ class _SecondCompanyPageState extends State<SecondCompanyPage> {
         appBar: AppBar(
           title: Text(widget.company.getName),
         ),
-        body: ListView.builder(
+        body: _request ? Center(
+          child: CircularProgressIndicator(),
+        ) : ListView.builder(
           itemCount: widget.staffList.length,
           itemBuilder: (context, index) {
             if (index == widget.staffList.length) {

@@ -75,33 +75,19 @@ class _SearchPageState extends State<SearchPage> {
             title: new Text(_searchResult[i].title),
             onTap: () async {
               SearchResult sr = _searchResult[i];
+              Map map = new Map();
+              map['name'] = sr.title;
+              map['id'] = sr.id;
+
               if (sr.type == 1) {
                 Response response = await api.getStaff(sr.id);
                 if (response.data['success']) {
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ContactsDemo(Staff(response.data['data']))));
                 }
               } else if (sr.type == 2) {
-                Response response = await api.listStaff(sr.id, 1, 0);
-                if (response.data['success']) {
-                  Map map = new Map();
-                  map.putIfAbsent('name', () => sr.title);
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SecondCompanyPage(
-                      company: new Company(map),
-                      companyList: new List(),
-                      staffList: Staff.buildList(response.data['data'])))
-                  );
-                }
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SecondCompanyPage(company: new Company(map))));
               } else if (sr.type == 3) {
-                Response response = await api.listStaff(sr.id, 1, 1);
-                if (response.data['success']) {
-                  Map map = new Map();
-                  map.putIfAbsent('name', () => sr.title);
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SecondProjectPage(
-                      project: new Project(map),
-                      projectList: new List(),
-                      staffList: Staff.buildList(response.data['data'])))
-                  );
-                }
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SecondProjectPage(project: new Project(map))));
               }
             },
           ),
