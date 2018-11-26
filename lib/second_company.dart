@@ -7,8 +7,8 @@ import 'helper.dart';
 
 class SecondCompanyPage extends StatefulWidget {
   final Company company;
-  List<Company> companyList;
-  List<Staff> staffList;
+  List<Company> companyList = new List();
+  List<Staff> staffList = new List();
 
   SecondCompanyPage({Key key, @required this.company}) : super(key: key);
 

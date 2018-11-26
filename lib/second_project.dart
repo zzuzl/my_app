@@ -7,8 +7,8 @@ import 'helper.dart';
 
 class SecondProjectPage extends StatefulWidget {
   final Project project;
-  List<Project> projectList;
-  List<Staff> staffList;
+  List<Project> projectList = new List();
+  List<Staff> staffList = new List();
 
   SecondProjectPage(
       {Key key,
