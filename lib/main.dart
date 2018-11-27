@@ -9,7 +9,7 @@ import 'home.dart';
 import 'Staff.dart';
 import 'search.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:package_info/package_info.dart';
 
 void main() => runApp(MyApp());
@@ -48,7 +48,7 @@ class LaunchPage extends StatelessWidget {
       api.initSp(sp);
 
       if (Platform.isAndroid) {
-        PermissionHandler()
+        /*PermissionHandler()
             .checkPermissionStatus(PermissionGroup.storage)
             .then((PermissionStatus status) {
           if (status != PermissionStatus.granted) {
@@ -62,7 +62,7 @@ class LaunchPage extends StatelessWidget {
           } else {
             goNext(context);
           }
-        });
+        });*/
       } else {
         checkToken(context);
       }
