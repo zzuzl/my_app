@@ -11,6 +11,7 @@ import 'search.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:permission_handler/permission_handler.dart';
 import 'package:package_info/package_info.dart';
+import 'qr.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: '中原分公司数字人事',
+      title: '二维码生成',
       home: LaunchPage(),
     );
   }
@@ -64,7 +65,7 @@ class LaunchPage extends StatelessWidget {
           }
         });*/
       } else {
-        checkToken(context);
+        checkUpdate(context);
       }
     });
 
@@ -73,6 +74,55 @@ class LaunchPage extends StatelessWidget {
         child: const CircularProgressIndicator(),
       ),
     );
+  }
+
+  void checkUpdate(BuildContext context) async {
+    Response response = await api.checkUpdate();
+    if (response.data['success'] && response.data['data'] != null) {
+      PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+        String newVersion = response.data['data']['version'];
+        if (response.data['data']['msg'] != null) {
+          checkToken(context);
+          return;
+        }
+
+        if (packageInfo.version != newVersion) {
+          showDialog<dynamic>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('发现新版本请前往appStore升级'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('确定'),
+                    onPressed: () async {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => QrPage()),
+                            (Route<dynamic> route) {
+                          return false;
+                        },
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => QrPage()),
+                (Route<dynamic> route) {
+              return false;
+            },
+          );
+        }
+      });
+    }
   }
 
   void goNext(BuildContext context) async {

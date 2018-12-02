@@ -99,6 +99,10 @@ class Api {
     return dio.get(BASE + "rest/checkVersion");
   }
 
+  Future<Response> checkUpdate() {
+    return dio.get(BASE + "rest/checkVersion?platform=" + Platform.operatingSystem);
+  }
+
   void storeToken(String _token) {
     token = _token;
     sp.setString(TOKEN_KEY, token);
