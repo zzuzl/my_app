@@ -1,16 +1,15 @@
 import 'dart:convert';
+import 'demo.dart';
 
-class Project {
+class Project extends Category{
   int id;
-  String name;
   int pid;
 
   String get getName => name;
   int get getId => id;
 
-  Project(Map map) {
+  Project(Map map) : super.fromMap(map['name'], new List()) {
     this.id = map['id'];
-    this.name = map['name'];
     this.pid = map['pid'];
   }
 

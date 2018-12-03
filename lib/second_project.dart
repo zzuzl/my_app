@@ -4,19 +4,14 @@ import 'Staff.dart';
 import 'staff_info.dart';
 import 'package:dio/dio.dart';
 import 'helper.dart';
+import 'demo.dart';
 
-class SecondProjectPage extends StatefulWidget {
+class SecondProjectPage extends BackdropDemo {
   final Project project;
   List<Project> projectList = new List();
   List<Staff> staffList = new List();
 
-  SecondProjectPage(
-      {Key key,
-      @required this.project})
-      : super(key: key);
-
-  @override
-  _SecondProjectPageState createState() => _SecondProjectPageState();
+  SecondProjectPage(this.project) : super(project);
 }
 
 class _SecondProjectPageState extends State<SecondProjectPage> {

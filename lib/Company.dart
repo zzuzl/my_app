@@ -1,6 +1,7 @@
 import 'dart:convert';
+import 'demo.dart';
 
-class Company {
+class Company extends Category {
   int id;
   String name;
   int pid;
@@ -8,9 +9,8 @@ class Company {
   String get getName => name;
   int get getId => id;
 
-  Company(Map map) {
+  Company(Map map) : super.fromMap(map['name'], new List()) {
     this.id = map['id'];
-    this.name = map['name'];
     this.pid = map['pid'];
   }
 

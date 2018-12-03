@@ -60,8 +60,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: Colors.blue[500],
                     ),
                     onTap: () async {
-                      int id = list[index].getId;
-
                       if (_selectedIndex == 0) {
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => SecondCompanyPage(
@@ -71,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       } else if (_selectedIndex == 1) {
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => SecondProjectPage(
-                            project: list[index],
+                            list[index],
                           ),
                         ));
                       }

@@ -87,7 +87,7 @@ class _SearchPageState extends State<SearchPage> {
               } else if (sr.type == 2) {
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SecondCompanyPage(company: new Company(map))));
               } else if (sr.type == 3) {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SecondProjectPage(project: new Project(map))));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SecondProjectPage(new Project(map))));
               }
             },
           ),
