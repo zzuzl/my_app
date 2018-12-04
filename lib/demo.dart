@@ -5,39 +5,48 @@ import 'package:dio/dio.dart';
 import 'helper.dart';
 import 'Staff.dart';
 import 'BaseDomain.dart';
+import 'package:event_bus/event_bus.dart';
 
 class Category {
-  const Category({ this.name });
+  const Category({ this.name, this.type });
   final String name;
+  final int type;
 
-  Category.fromMap(this.name);
+  Category.fromMap(this.name, this.type);
 }
 
+EventBus eventBus = EventBus();
 const List<Category> allCategories = <Category>[
-  Category(name: '全部'),
-  Category(name: '总工'),
-  Category(name: '技术质量部经理'),
-  Category(name: '质量总监'),
-  Category(name: '技术员'),
-  Category(name: '测量员'),
-  Category(name: '资料员'),
-  Category(name: '试验员'),
-  Category(name: '安装员'),
-  Category(name: '技术部管理人员'),
-  Category(name: '质量员'),
-  Category(name: '专业师'),
+  Category(name: '全部', type: 0),
+  Category(name: '总工', type: 1),
+  Category(name: '技术质量部经理', type: 2),
+  Category(name: '质量总监', type: 3),
+  Category(name: '技术员', type: 4),
+  Category(name: '测量员', type: 5),
+  Category(name: '资料员', type: 6),
+  Category(name: '试验员', type: 7),
+  Category(name: '安装员', type: 8),
+  Category(name: '技术部管理人员', type: 9),
+  Category(name: '质量员', type: 10),
+  Category(name: '专业师', type: 11),
 ];
 
 class CategoryView extends StatefulWidget {
-  CategoryView({ Key key, this.category, this.id, this.source }) : super(key: key);
+  CategoryView({ Key key, this.category, this.baseDomain, this.source }) : super(key: key);
 
-  final Category category;
-  final int id;
+  Category category;
+  final BaseDomain baseDomain;
   final int source;
   List<Staff> staffList = new List();
 
   @override
   _CategoryViewState createState() => _CategoryViewState();
+}
+
+class CategoryUpdateEvent {
+  Category category;
+
+  CategoryUpdateEvent(this.category);
 }
 
 class _CategoryViewState extends State<CategoryView> {
@@ -47,6 +56,7 @@ class _CategoryViewState extends State<CategoryView> {
 
   @override
   void initState() {
+    print('intitstate');
     super.initState();
 
     this.initData();
@@ -57,25 +67,37 @@ class _CategoryViewState extends State<CategoryView> {
         getMore();
       }
     });
+
+    eventBus.on<CategoryUpdateEvent>().listen((event) {
+      widget.category = event.category;
+      this.initData();
+    });
   }
 
   @override
   void dispose() {
+    print('dispose');
+
     _scrollController.dispose();
     super.dispose();
   }
 
   void initData() async {
-    Response staffResponse = await api.listStaff(widget.id, _page, widget.source);
-
     setState(() {
-      print(staffResponse);
+      _page = 1;
+      _request = true;
+    });
+
+    api.listStaff(widget.baseDomain.id, _page, widget.source, widget.category.type)
+      .then((Response staffResponse) {
       if (staffResponse.data['success']) {
         widget.staffList = Staff.buildList(staffResponse.data['data']);
+        print(widget.staffList);
       }
       _request = false;
+      _page ++;
+      setState(() {});
     });
-    _page ++;
   }
 
   void getMore() async {
@@ -84,7 +106,7 @@ class _CategoryViewState extends State<CategoryView> {
     });
 
     List<Staff> list;
-    Response response = await api.listStaff(widget.id, _page, widget.source);
+    Response response = await api.listStaff(widget.baseDomain.id, _page, widget.source, widget.category.type);
     if (response.data['success']) {
       list = Staff.buildList(response.data['data']);
       if (list == null || list.length < 1) {
@@ -107,6 +129,7 @@ class _CategoryViewState extends State<CategoryView> {
 
   @override
   Widget build(BuildContext context) {
+    print('build,${widget.staffList.length}');
     return _request ? Center(
       child: CircularProgressIndicator(),
     ) : ListView.builder(
@@ -273,6 +296,7 @@ class _BackdropDemoState extends State<BackdropDemo> with SingleTickerProviderSt
     setState(() {
       _category = category;
       _controller.fling(velocity: 2.0);
+      eventBus.fire(new CategoryUpdateEvent(category));
     });
   }
 
@@ -369,7 +393,11 @@ class _BackdropDemoState extends State<BackdropDemo> with SingleTickerProviderSt
               onVerticalDragUpdate: _handleDragUpdate,
               onVerticalDragEnd: _handleDragEnd,
               title: Text(_category.name),
-              child: CategoryView(category: _category, id: widget._baseDomain.id, source: widget.source),
+              child: CategoryView(
+                  category: _category,
+                  baseDomain: widget._baseDomain,
+                  source: widget.source
+              )
             ),
           ),
         ],

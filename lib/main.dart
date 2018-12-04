@@ -81,7 +81,7 @@ class LaunchPage extends StatelessWidget {
     if (response.data['success'] && response.data['data'] != null) {
       PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
         String newVersion = response.data['data']['version'];
-        if (response.data['data']['msg'] != null) {
+        if (response.data['data']['msg'] == null) {
           checkToken(context);
           return;
         }

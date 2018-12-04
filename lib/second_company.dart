@@ -44,7 +44,7 @@ class _SecondCompanyPageState extends State<SecondCompanyPage> {
 
   void initData() async {
     Response response = await api.listCompany(widget.company.id);
-    Response staffResponse = await api.listStaff(widget.company.id, _page, SOURCE);
+    Response staffResponse = await api.listStaff(widget.company.id, _page, SOURCE, 0);
 
     setState(() {
       if (response.data['success']) {
@@ -64,7 +64,7 @@ class _SecondCompanyPageState extends State<SecondCompanyPage> {
     });
 
     List<Staff> list;
-    Response response = await api.listStaff(widget.company.id, _page, SOURCE);
+    Response response = await api.listStaff(widget.company.id, _page, SOURCE, 0);
     if (response.data['success']) {
       list = Staff.buildList(response.data['data']);
       if (list == null || list.length < 1) {
