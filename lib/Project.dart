@@ -1,17 +1,11 @@
 import 'dart:convert';
-import 'demo.dart';
+import 'BaseDomain.dart';
 
-class Project extends Category{
-  int id;
-  int pid;
-
+class Project extends BaseDomain {
   String get getName => name;
   int get getId => id;
 
-  Project(Map map) : super.fromMap(map['name'], new List()) {
-    this.id = map['id'];
-    this.pid = map['pid'];
-  }
+  Project(Map map) : super(map['id'], map['pid'], map['name']);
 
   static List<Project> buildList(List list) {
     List<Project> projects = new List();

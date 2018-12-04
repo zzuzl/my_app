@@ -1,18 +1,11 @@
 import 'dart:convert';
-import 'demo.dart';
+import 'BaseDomain.dart';
 
-class Company extends Category {
-  int id;
-  String name;
-  int pid;
-
+class Company extends BaseDomain {
   String get getName => name;
   int get getId => id;
 
-  Company(Map map) : super.fromMap(map['name'], new List()) {
-    this.id = map['id'];
-    this.pid = map['pid'];
-  }
+  Company(Map map) : super(map['id'], map['pid'], map['name']);
 
   static List<Company> buildList(List list) {
     List<Company> companys = new List();
