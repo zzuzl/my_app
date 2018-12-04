@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       if (_selectedIndex == 0) {
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => SecondCompanyPage(
-                            company: list[index],
+                            list[index],
                           ),
                         ));
                       } else if (_selectedIndex == 1) {

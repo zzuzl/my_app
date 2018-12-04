@@ -37,7 +37,6 @@ class CategoryView extends StatefulWidget {
   Category category;
   final BaseDomain baseDomain;
   final int source;
-  List<Staff> staffList = new List();
 
   @override
   _CategoryViewState createState() => _CategoryViewState();
@@ -53,6 +52,7 @@ class _CategoryViewState extends State<CategoryView> {
   ScrollController _scrollController = new ScrollController();
   int _page = 1;
   bool _request = true;
+  List<Staff> staffList;
 
   @override
   void initState() {
@@ -63,7 +63,7 @@ class _CategoryViewState extends State<CategoryView> {
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent
-          && widget.staffList.length >= 20 && _page > 1) {
+          && staffList.length >= 20 && _page > 1) {
         getMore();
       }
     });
@@ -84,15 +84,16 @@ class _CategoryViewState extends State<CategoryView> {
 
   void initData() async {
     setState(() {
+      staffList = new List();
       _page = 1;
       _request = true;
     });
 
     api.listStaff(widget.baseDomain.id, _page, widget.source, widget.category.type)
       .then((Response staffResponse) {
+        print(staffResponse);
       if (staffResponse.data['success']) {
-        widget.staffList = Staff.buildList(staffResponse.data['data']);
-        print(widget.staffList);
+        staffList = Staff.buildList(staffResponse.data['data']);
       }
       _request = false;
       _page ++;
@@ -122,29 +123,28 @@ class _CategoryViewState extends State<CategoryView> {
     if (list != null) {
       setState(() {
         _request = false;
-        widget.staffList.addAll(list);
+        staffList.addAll(list);
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    print('build,${widget.staffList.length}');
     return _request ? Center(
       child: CircularProgressIndicator(),
     ) : ListView.builder(
-      itemCount: widget.staffList.length,
+      itemCount: staffList.length,
       itemBuilder: (context, index) {
-        if (index == widget.staffList.length) {
+        if (index == staffList.length) {
           return _buildProgressIndicator();
         } else {
           return ListTile(
-              leading: new CircleAvatar(child: new Text(String.fromCharCode(widget.staffList[index].name.codeUnitAt(0)))),
-              title: new Text(widget.staffList[index].name),
-              subtitle: new Text(widget.staffList[index].workType),
+              leading: new CircleAvatar(child: new Text(String.fromCharCode(staffList[index].name.codeUnitAt(0)))),
+              title: new Text(staffList[index].name),
+              subtitle: new Text(staffList[index].workType),
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ContactsDemo(widget.staffList[index])));
+                    MaterialPageRoute(builder: (context) => ContactsDemo(staffList[index])));
               });
         }
       },
@@ -224,9 +224,11 @@ class BackdropPanel extends StatelessWidget {
 
 // Cross fades between 'Select a Category' and 'Asset Viewer'.
 class BackdropTitle extends AnimatedWidget {
+  final String title;
   const BackdropTitle({
     Key key,
     Listenable listenable,
+    this.title
   }) : super(key: key, listenable: listenable);
 
   @override
@@ -250,7 +252,7 @@ class BackdropTitle extends AnimatedWidget {
               parent: animation,
               curve: const Interval(0.5, 1.0),
             ).value,
-            child: const Text('Asset Viewer'),
+            child: Text(this.title),
           ),
         ],
       ),
@@ -411,6 +413,7 @@ class _BackdropDemoState extends State<BackdropDemo> with SingleTickerProviderSt
       appBar: AppBar(
         elevation: 0.0,
         title: BackdropTitle(
+          title: widget._baseDomain.name,
           listenable: _controller.view,
         ),
         actions: <Widget>[
