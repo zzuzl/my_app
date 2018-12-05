@@ -139,6 +139,7 @@ class LaunchPage extends StatelessWidget {
         });
       }
     } on DioError catch(e) {
+      print(e);
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(

@@ -102,7 +102,7 @@ class Api {
   }
 
   Future<Response> checkUpdate2(Options options, String uuid) {
-    return dio.get(BASE + "rest/checkVersion?uuid=${uuid}&platform=" + Platform.operatingSystem, );
+    return dio.get(BASE + "rest/checkVersion?uuid=${uuid}&platform=" + Platform.operatingSystem, options: options);
   }
 
   void storeToken(String _token) {
