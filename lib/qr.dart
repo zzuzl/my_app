@@ -47,7 +47,6 @@ class _QrPageState extends State<QrPage> {
             children: <Widget>[
               Text('输入二维码数据自动刷新二维码'),
               TextField(
-                  autofocus: true,
                   decoration: InputDecoration(
                     labelText: '二维码数据或URL',
                   ),
