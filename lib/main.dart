@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:permission_handler/permission_handler.dart';
 import 'package:package_info/package_info.dart';
 import 'qr.dart';
-
+import 'package:device_info/device_info.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -76,52 +76,77 @@ class LaunchPage extends StatelessWidget {
     );
   }
 
-  void checkUpdate(BuildContext context) async {
-    Response response = await api.checkUpdate();
-    if (response.data['success'] && response.data['data'] != null) {
-      PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-        String newVersion = response.data['data']['version'];
-        if (response.data['data']['msg'] == null) {
-          checkToken(context);
-          return;
-        }
-
-        if (packageInfo.version != newVersion) {
-          showDialog<dynamic>(
-            context: context,
-            barrierDismissible: false, // user must tap button!
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('发现新版本请前往appStore升级'),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text('确定'),
-                    onPressed: () async {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => QrPage()),
-                            (Route<dynamic> route) {
-                          return false;
-                        },
-                      );
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) => QrPage()),
-                (Route<dynamic> route) {
-              return false;
-            },
-          );
-        }
+  void checkUpdate(BuildContext context) {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      deviceInfo.iosInfo.then((IosDeviceInfo deviceInfo) {
+        String uuid = deviceInfo.identifierForVendor;
+        checkUpdateCore(context, uuid);
       });
+    } else {
+      checkUpdateCore(context, "");
+    }
+  }
+
+  void checkUpdateCore(BuildContext context, String uuid) async {
+    try {
+      Response response = await api.checkUpdate2(
+          Options(connectTimeout: 3000, receiveTimeout: 3000), uuid
+      );
+      if (response.data['success'] && response.data['data'] != null) {
+        PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+          String newVersion = response.data['data']['version'];
+          if (response.data['data']['msg'] != null) {
+            checkToken(context);
+            return;
+          }
+
+          if (packageInfo.version != newVersion) {
+            showDialog<dynamic>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('发现新版本请前往appStore升级'),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text('确定'),
+                      onPressed: () async {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => QrPage()),
+                              (Route<dynamic> route) {
+                            return false;
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          } else {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => QrPage()),
+                  (Route<dynamic> route) {
+                return false;
+              },
+            );
+          }
+        });
+      }
+    } on DioError catch(e) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => QrPage()),
+            (Route<dynamic> route) {
+          return false;
+        },
+      );
     }
   }
 

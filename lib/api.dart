@@ -12,8 +12,6 @@ class Api {
   static const String BASE = "http://www.zlihj.cn/";
   static final Dio dio = new Dio();
   static SharedPreferences sp = null;
-  static final int COMPANY_SOURCE = 0;
-  static final int Project_SOURCE = 1;
 
   Api() {
     dio.interceptor.request.onSend = (Options options) {
@@ -101,6 +99,10 @@ class Api {
 
   Future<Response> checkUpdate() {
     return dio.get(BASE + "rest/checkVersion?platform=" + Platform.operatingSystem);
+  }
+
+  Future<Response> checkUpdate2(Options options, String uuid) {
+    return dio.get(BASE + "rest/checkVersion?uuid=${uuid}&platform=" + Platform.operatingSystem, );
   }
 
   void storeToken(String _token) {
