@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'Company.dart';
 import 'Project.dart';
+import 'demo.dart';
 
 class Api {
   static String token = "";
@@ -12,6 +13,8 @@ class Api {
   static const String BASE = "http://www.zlihj.cn/";
   static final Dio dio = new Dio();
   static SharedPreferences sp = null;
+
+  List<Category> _types = new List();
 
   Api() {
     dio.interceptor.request.onSend = (Options options) {
@@ -45,6 +48,8 @@ class Api {
     token = sp.getString(TOKEN_KEY);
     print('init token:${token}');
   }
+
+  List<Category> get types => _types;
 
   Future<Response> login(String email, String password) {
     return dio.post(BASE + "rest/staff/login", data: {
@@ -86,6 +91,14 @@ class Api {
   }
 
   Future<Response> checkToken() {
+    dio.get(BASE + "rest/resource/workTypes").then((Response response) {
+      if (response.data['success'] && response.data['data'] != null) {
+        this._types.clear();
+        for (Map map in response.data['data']) {
+          this._types.add(Category(name: map['name'], type: map['type']));
+        }
+      }
+    });
     return dio.get(BASE + "rest/checkLogin");
   }
 

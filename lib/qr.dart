@@ -17,23 +17,28 @@ class QrPage extends StatefulWidget {
 class _QrPageState extends State<QrPage> {
   final _qrController = TextEditingController();
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  String info = 'Unknow';
+  IosDeviceInfo iosInfo;
   GlobalKey globalKey = GlobalKey(debugLabel: 'QrPage');
   GlobalKey _scaffoldKey = GlobalKey(debugLabel: 'Scaffold');
+  static const platform = const MethodChannel('cn.zlihj/zjdp');
+
+  Future<void> savePhoto(String path) async {
+    try {
+      await platform.invokeMethod('savePhoto', [path]);
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    setState(() {
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     if (Platform.isIOS) {
       deviceInfo.iosInfo.then((IosDeviceInfo deviceInfo) {
         setState(() {
-          info = deviceInfo.identifierForVendor;
-          Clipboard.setData(new ClipboardData(text: info));
-        });
-      });
-    } else if (Platform.isAndroid) {
-      deviceInfo.androidInfo.then((AndroidDeviceInfo deviceInfo) {
-        setState(() {
-          info = deviceInfo.model;
+          this.iosInfo = deviceInfo;
         });
       });
     }
@@ -45,35 +50,73 @@ class _QrPageState extends State<QrPage> {
         body: Builder(builder: (context) {
           return ListView(
             children: <Widget>[
-              Text('输入二维码数据自动刷新二维码'),
-              TextField(
-                  decoration: InputDecoration(
-                    labelText: '二维码数据或URL',
+              Center(
+                child: Card(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      TextField(
+                          decoration: InputDecoration(
+                            labelText: '输入二维码数据或URL自动刷新',
+                          ),
+                          controller: _qrController),
+                      RepaintBoundary(
+                          key: globalKey,
+                          child: Center(child: new QrImage(
+                            data: _qrController.text == null
+                                ? ""
+                                : _qrController.text,
+                            version: 6,
+                            size: 200.0,
+                          ),)
+                      ),
+                      RaisedButton(
+                        child: new Text("保存"),
+                        onPressed: () async {
+                          RenderRepaintBoundary boundary = globalKey.currentContext.findRenderObject();
+                          ui.Image image = await boundary.toImage();
+                          ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+                          Uint8List pngBytes = byteData.buffer.asUint8List();
+
+                          String tempDir = (await getTemporaryDirectory()).path;
+                          String path = '${tempDir}/${new DateTime.now().millisecondsSinceEpoch}.png';
+                          await new File(path).writeAsBytes(pngBytes);
+
+                          if (Platform.isIOS) {
+                            savePhoto(path);
+                          }
+
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text('已保存：$path'),
+                          ));
+                        },
+                      ),
+                      ListTile(
+                        title: Text('设备名称'),
+                        subtitle: Text(iosInfo == null ? '' : iosInfo.name),
+                      ),
+                      ListTile(
+                        title: Text('设备型号'),
+                        subtitle: Text(iosInfo == null ? '' : iosInfo.utsname.machine),
+                      ),
+                      ListTile(
+                        title: Text('UUID'),
+                        subtitle: Text(iosInfo == null ? '' : iosInfo.identifierForVendor),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.content_copy),
+                            onPressed: () {
+                              if (iosInfo != null) {
+                                Clipboard.setData(new ClipboardData(text: iosInfo.identifierForVendor));
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text('已复制到剪切板'),
+                                ));
+                              }
+                            },
+                          ),
+                      ),
+                    ],
                   ),
-                  controller: _qrController),
-              RepaintBoundary(
-                  key: globalKey,
-                  child: Center(child: new QrImage(
-                    data: _qrController.text == null
-                        ? "https://www.google.com/"
-                        : _qrController.text,
-                    size: 200.0,
-                  ),)
-              ),
-              RaisedButton(
-                child: new Text("保存"),
-                onPressed: () async {
-                  RenderRepaintBoundary boundary = globalKey.currentContext.findRenderObject();
-                  ui.Image image = await boundary.toImage();
-                  ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-                  Uint8List pngBytes = byteData.buffer.asUint8List();
-                  String path = '/tmp/${new DateTime.now().millisecondsSinceEpoch}.png';
-                  print(path);
-                  new File(path).writeAsBytes(pngBytes);
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text('已保存：$path'),
-                  ));
-                },
+                ),
               ),
             ],
           );

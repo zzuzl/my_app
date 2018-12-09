@@ -16,20 +16,9 @@ class Category {
 }
 
 EventBus eventBus = EventBus();
-const List<Category> allCategories = <Category>[
+List<Category> allCategories = (<Category>[
   Category(name: '全部', type: 0),
-  Category(name: '总工', type: 1),
-  Category(name: '技术质量部经理', type: 2),
-  Category(name: '质量总监', type: 3),
-  Category(name: '技术员', type: 4),
-  Category(name: '测量员', type: 5),
-  Category(name: '资料员', type: 6),
-  Category(name: '试验员', type: 7),
-  Category(name: '安装员', type: 8),
-  Category(name: '技术部管理人员', type: 9),
-  Category(name: '质量员', type: 10),
-  Category(name: '专业师', type: 11),
-];
+] + List.of(api.types));
 
 class CategoryView extends StatefulWidget {
   CategoryView({ Key key, this.category, this.baseDomain, this.source }) : super(key: key);

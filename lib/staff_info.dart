@@ -59,6 +59,16 @@ class ContactsDemoState extends State<ContactsDemo> {
     return s == null ? '' : s;
   }
 
+  void copy(BuildContext context, String text) {
+    if (text == null || text.length < 1) {
+      return;
+    }
+    Clipboard.setData(new ClipboardData(text: text));
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text('已复制到剪切板'),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -68,162 +78,163 @@ class ContactsDemoState extends State<ContactsDemo> {
         platform: Theme.of(context).platform,
       ),
       child: Scaffold(
-        key: _scaffoldKey,
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              expandedHeight: _appBarHeight,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(staff.name + '(${staff.gender})'),
-                background: Stack(
-                  fit: StackFit.expand,
-                ),
-              ),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate(<Widget>[
-                _ContactCategory(
-                  icon: Icons.contacts,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(getText(staff.pname),
-                          style: TextStyle(fontWeight: FontWeight.w300)),
-                      onLongPress: () {
-                        Clipboard.setData(new ClipboardData(text: getText(staff.pname)));
-                      },
+          key: _scaffoldKey,
+          body: Builder(builder: (context) {
+            return CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  expandedHeight: _appBarHeight,
+                  pinned: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    title: Text(staff.name + '(${staff.gender})'),
+                    background: Stack(
+                      fit: StackFit.expand,
                     ),
-                  ],
+                  ),
                 ),
-                _ContactCategory(
-                  icon: Icons.domain,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(getText(staff.workType),
-                          style: TextStyle(fontWeight: FontWeight.w300)),
-                      onLongPress: () {
-                        Clipboard.setData(new ClipboardData(text: getText(staff.workType)));
-                      },
+                SliverList(
+                  delegate: SliverChildListDelegate(<Widget>[
+                    _ContactCategory(
+                      icon: Icons.contacts,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(getText(staff.pname),
+                              style: TextStyle(fontWeight: FontWeight.w300)),
+                          onLongPress: () {
+                            copy(context, getText(staff.pname));
+                          },
+                        ),
+                      ],
                     ),
-                  ],
+                    _ContactCategory(
+                      icon: Icons.domain,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(getText(staff.workType),
+                              style: TextStyle(fontWeight: FontWeight.w300)),
+                          onLongPress: () {
+                            copy(context, getText(staff.workType));
+                          },
+                        ),
+                      ],
+                    ),
+                    _ContactCategory(
+                      icon: Icons.cake,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(getText(staff.birthday),
+                              style: TextStyle(fontWeight: FontWeight.w300)),
+                          onLongPress: () {
+                            copy(context, getText(staff.birthday));
+                          },
+                        ),
+                      ],
+                    ),
+                    _ContactCategory(
+                      icon: Icons.email,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(getText(staff.email),
+                              style: TextStyle(fontWeight: FontWeight.w300)),
+                          onLongPress: () {
+                            copy(context, getText(staff.email));
+                          },
+                        ),
+                      ],
+                    ),
+                    _ContactCategory(
+                      icon: MyIcon.qq,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(getText(staff.qq),
+                              style: TextStyle(fontWeight: FontWeight.w300)),
+                          onLongPress: () {
+                            copy(context, getText(staff.qq));
+                          },
+                        ),
+                      ],
+                    ),
+                    _ContactCategory(
+                      icon: MyIcon.wx,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(getText(staff.wx),
+                              style: TextStyle(fontWeight: FontWeight.w300)),
+                          onLongPress: () {
+                            copy(context, getText(staff.wx));
+                          },
+                        ),
+                      ],
+                    ),
+                    _ContactCategory(
+                      icon: MyIcon.gxt,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(getText(staff.gxtAccount),
+                              style: TextStyle(fontWeight: FontWeight.w300)),
+                          onLongPress: () {
+                            copy(context, getText(staff.gxtAccount));
+                          },
+                        ),
+                      ],
+                    ),
+                    _ContactCategory(
+                      icon: Icons.call,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(getText(staff.phone),
+                              style: TextStyle(fontWeight: FontWeight.w300)),
+                          onLongPress: () {
+                            copy(context, getText(staff.phone));
+                          },
+                          trailing: IconButton(
+                            icon: const Icon(Icons.call),
+                            onPressed: () async {
+                              String url = 'tel:' + staff.phone;
+                              if (await canLaunch(url)) {
+                                await launch(url);
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    _ContactCategory(
+                      icon: Icons.location_on,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(getText(staff.workAddress),
+                              style: TextStyle(fontWeight: FontWeight.w300)),
+                          onLongPress: () {
+                            copy(context, getText(staff.workAddress));
+                          },
+                        ),
+                      ],
+                    ),
+                    _ContactCategory(
+                      icon: Icons.school,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(getText(staff.school),
+                              style: TextStyle(fontWeight: FontWeight.w300)),
+                          onLongPress: () {
+                            copy(context, getText(staff.school));
+                          },
+                        ),
+                        ListTile(
+                          title: Text(getText(staff.major),
+                              style: TextStyle(fontWeight: FontWeight.w300)),
+                          onLongPress: () {
+                            copy(context, getText(staff.major));
+                          },
+                        ),
+                      ],
+                    ),
+                  ]),
                 ),
-                _ContactCategory(
-                  icon: Icons.cake,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(getText(staff.birthday),
-                          style: TextStyle(fontWeight: FontWeight.w300)),
-                      onLongPress: () {
-                        Clipboard.setData(new ClipboardData(text: getText(staff.birthday)));
-                      },
-                    ),
-                  ],
-                ),
-                _ContactCategory(
-                  icon: Icons.email,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(getText(staff.email),
-                          style: TextStyle(fontWeight: FontWeight.w300)),
-                      onLongPress: () {
-                        Clipboard.setData(new ClipboardData(text: getText(staff.email)));
-                      },
-                    ),
-                  ],
-                ),
-                _ContactCategory(
-                  icon: MyIcon.qq,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(getText(staff.qq),
-                          style: TextStyle(fontWeight: FontWeight.w300)),
-                      onLongPress: () {
-                        Clipboard.setData(new ClipboardData(text: getText(staff.qq)));
-                      },
-                    ),
-                  ],
-                ),
-                _ContactCategory(
-                  icon: MyIcon.wx,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(getText(staff.wx),
-                          style: TextStyle(fontWeight: FontWeight.w300)),
-                      onLongPress: () {
-                        Clipboard.setData(new ClipboardData(text: getText(staff.wx)));
-                      },
-                    ),
-                  ],
-                ),
-                _ContactCategory(
-                  icon: MyIcon.gxt,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(getText(staff.gxtAccount),
-                          style: TextStyle(fontWeight: FontWeight.w300)),
-                      onLongPress: () {
-                        Clipboard.setData(new ClipboardData(text: getText(staff.gxtAccount)));
-                      },
-                    ),
-                  ],
-                ),
-                _ContactCategory(
-                  icon: Icons.call,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(getText(staff.phone),
-                          style: TextStyle(fontWeight: FontWeight.w300)),
-                      onLongPress: () {
-                        Clipboard.setData(new ClipboardData(text: getText(staff.phone)));
-                      },
-                      trailing: IconButton(
-                        icon: const Icon(Icons.call),
-                        onPressed: () async {
-                          String url = 'tel:' + staff.phone;
-                          if (await canLaunch(url)) {
-                            await launch(url);
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                _ContactCategory(
-                  icon: Icons.location_on,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(getText(staff.workAddress),
-                          style: TextStyle(fontWeight: FontWeight.w300)),
-                      onLongPress: () {
-                        Clipboard.setData(new ClipboardData(text: getText(staff.workAddress)));
-                      },
-                    ),
-                  ],
-                ),
-                _ContactCategory(
-                  icon: Icons.school,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(getText(staff.school),
-                          style: TextStyle(fontWeight: FontWeight.w300)),
-                      onLongPress: () {
-                        Clipboard.setData(new ClipboardData(text: getText(staff.school)));
-                      },
-                    ),
-                    ListTile(
-                      title: Text(getText(staff.major),
-                          style: TextStyle(fontWeight: FontWeight.w300)),
-                      onLongPress: () {
-                        Clipboard.setData(new ClipboardData(text: getText(staff.major)));
-                      },
-                    ),
-                  ],
-                ),
-              ]),
-            ),
-          ],
-        ),
-      ),
+              ],
+            );
+          })),
     );
   }
 }
